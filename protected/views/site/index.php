@@ -11,7 +11,7 @@ $cols = 5;
 $colsize = $table_width / $cols - 10;
 $count=0;
 
-$marker = StdLib::load_image_source("marker.png");
+$marker = StdLib::load_image_source("marker");
 $imager = new Imager($marker);
 $imager->width = "36px";
 $imager->height = "36px";
@@ -55,19 +55,19 @@ div.spacer {
 <?php if(isset(Yii::app()->user) and !Yii::app()->user->isGuest): ?>
 <div class="admin-bar">
 	<div class="admin-button ui-widget-header active add-building" title="Add New Building">
-		<?=StdLib::load_image("plus.png","20px");?>
+		<?=StdLib::load_image("plus","20px");?>
 	</div>
 	<div class="admin-button ui-widget-header active" title="Download Entire Album">
-		<?=StdLib::load_image("arrow_down.png","20px");?>
+		<?=StdLib::load_image("arrow_down","20px");?>
 	</div>
 	<div class="admin-button ui-widget-header active reorder" title="Reorder Buildings">
-		<?=StdLib::load_image("wizard.png","20px");?>
+		<?=StdLib::load_image("wizard","20px");?>
 	</div>
 	<div class="spacer">
 		
 	</div>
 	<div class="admin-button ui-widget-header active configure" title="Configure System">
-		<?=StdLib::load_image("options_2.png","20px");?>
+		<?=StdLib::load_image("options_2","20px");?>
 	</div>
 </div>
 <?php endif; ?>
