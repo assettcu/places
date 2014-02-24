@@ -36,17 +36,6 @@ $mainconfig = array(
 				'<action:\w+>'=>'site/<action>',
 			),
 		),
-		/**
-		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=places',
-			'emulatePrepare' => true,
-			'username' => 'places',
-			'password' => 'equalizations democratizations agrarianize remoralizing',
-			'charset' => 'utf8',
-      		'tablePrefix' => '',
-		),
-         * 
-         */
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors
             'errorAction'=>'site/error',
