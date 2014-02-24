@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
+<<<<<<< HEAD
 	<name>Places [Dev]</name>
+=======
+	<name>Places Prod</name>
+>>>>>>> bf5750938e5a9043950a9246ab69b3afbc9ad332
 	<comment></comment>
 	<projects>
 	</projects>
