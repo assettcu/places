@@ -41,7 +41,7 @@ $mainconfig = array(
 			'connectionString' => 'mysql:host=localhost;dbname=places',
 			'emulatePrepare' => true,
 			'username' => 'places',
-			'password' => '***REMOVED***',
+			'password' => 'equalizations democratizations agrarianize remoralizing',
 			'charset' => 'utf8',
       		'tablePrefix' => '',
 		),
