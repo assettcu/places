@@ -5,11 +5,7 @@
 
 // This is the main Web application configuration. Any writable
 // CWebApplication properties can be configured here.
-<<<<<<< HEAD
 $mainconfig = array(
-=======
-return array(
->>>>>>> bf5750938e5a9043950a9246ab69b3afbc9ad332
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
 	'name'=>'Places',
 
@@ -40,17 +36,6 @@ return array(
 				'<action:\w+>'=>'site/<action>',
 			),
 		),
-<<<<<<< HEAD
-=======
-		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=places',
-			'emulatePrepare' => true,
-			'username' => 'places',
-			'password' => 'equalizations democratizations agrarianize remoralizing',
-			'charset' => 'utf8',
-      		'tablePrefix' => '',
-		),
->>>>>>> bf5750938e5a9043950a9246ab69b3afbc9ad332
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors
             'errorAction'=>'site/error',
@@ -70,17 +55,11 @@ return array(
 			'autoRender' => true,
 		),
 	),
-	
-<<<<<<< HEAD
-=======
-
->>>>>>> bf5750938e5a9043950a9246ab69b3afbc9ad332
     // application-level parameters that can be accessed
     // using Yii::app()->params['paramName']
     'params'=>array(
         'LOCALAPP_JQUERY_VER'       => '1.10.2',
         'LOCALAPP_JQUERYUI_VER'     => '1.10.3',
-<<<<<<< HEAD
     ),
     // If install file still exists, redirect to install page
     'catchAllRequest'=>(!file_exists(dirname(__FILE__).'/main-ext.php')) ? array('site/install') : null,
@@ -115,8 +94,3 @@ if(is_file(dirname(__FILE__).'/main-ext.php')) {
 
 # Return the details
 return $mainconfig;
-=======
-        'LOCALAPP_SERVER'           => ($_SERVER["SERVER_NAME"]=="assettdev.colorado.edu")?"assettdev.colorado.edu":"compass.colorado.edu",
-    ),
-);
->>>>>>> bf5750938e5a9043950a9246ab69b3afbc9ad332

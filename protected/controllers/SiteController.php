@@ -23,7 +23,6 @@ class SiteController extends Controller
 	
 	public function beforeAction($action)
 	{
-<<<<<<< HEAD
 		if($this->getIsMobile()) {
 			Yii::app()->theme = 'mobile';
 		}
@@ -71,14 +70,6 @@ class SiteController extends Controller
         $this->render("install");
     }
 
-=======
-		if(!$this->getIsMobile()) {
-			// Yii::app()->theme = 'mobile';
-		}
-		return true;
-	}
-
->>>>>>> bf5750938e5a9043950a9246ab69b3afbc9ad332
 	/** Google Analytics **/
 	protected function beforeRender($view)
 	{
@@ -96,11 +87,7 @@ class SiteController extends Controller
 	
 	public function actionToMobile()
 	{
-<<<<<<< HEAD
 		Yii::app()->user->setState("mobile",true);
-=======
-		//Yii::app()->user->setState("mobile",true);
->>>>>>> bf5750938e5a9043950a9246ab69b3afbc9ad332
 		$this->redirect(Yii::app()->createUrl("index"));
 		exit;
 	}
@@ -683,11 +670,7 @@ class SiteController extends Controller
 	 */
 	public function actionError()
 	{
-<<<<<<< HEAD
 		$this->render('error', array("error"=>Yii::app()->errorHandler->error));
-=======
-		$this->render('error', Yii::app()->errorHandler->error);
->>>>>>> bf5750938e5a9043950a9246ab69b3afbc9ad332
 	}
 	
 	/**
