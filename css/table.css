@@ -3,6 +3,7 @@
 table.fancy-table {
     border-collapse:collapse;
     border-spacing:0px;
+    font-size:0.8em;
 }
 table.fancy-table thead tr th {
     padding:7px;

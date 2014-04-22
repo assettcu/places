@@ -135,6 +135,136 @@ body
 	display:inline-block;
 }
 
+/* Place CSS */
+
+.entry {
+    float:left;
+    width:100%;
+    margin:0;
+    padding:0;
+}
+.entry h2 {
+    float: right;
+    width: 85%;
+}
+.entry h3.nav {
+    float: left;
+    margin-top: 0.72727em;
+    width:5.5em;
+    margin-right:0.5em;
+}
+.entry h3.nav ul {
+    margin:0;
+    font-size:18px;
+    list-style:none;
+    display:block;
+    padding:0;
+}
+.entry h3.nav ul li {
+    display:block;
+    margin-left: 0.2em;
+    float:none;
+    margin-bottom:0;
+    line-height: 1.5em;
+    text-align:right;
+}
+.entry h3.nav ul li a {
+    display:block;
+    text-decoration:none;
+    color:#888;
+    width:auto!important;
+    padding:.25em .5em .25em 0;
+    border-right:2px solid #888;
+}
+.entry h3.nav ul li a:hover {
+    text-decoration:none;
+    color:#555;
+    background-color:#f0f0f0;
+    border-right:2px solid #09f;
+}
+.entry .content {
+    float:right;
+    width:85%;
+    margin:0;
+    padding:0;
+    margin-bottom:1600px;
+}
+.entry .images {
+    float:left;
+    padding:0em;
+    width:72%;
+    margin-bottom:60px;
+}
+
+.entry div.meta {
+    float: right;
+    width: 26%;
+    margin-top: 0;
+    border-right:2px solid #888;
+}
+
+div.meta ul {
+    list-style:none;
+    padding:0;
+    margin:0;
+    font-size:.8em;
+}
+div.meta ul li {
+    width: 13em;
+    float:left;
+    margin-right:0.5em;
+    margin-bottom:0.5em;
+}
+div.meta ul li div.label {
+    font-weight:bold;
+    font-style:italic;
+    color:#555;
+}
+div.meta ul li div.value {
+    padding-left:0.9em;
+    padding-top:0.25em;
+}
+div.metatitle {
+    font-size:1em;
+    font-style: italic;
+}
+div.metachoice {
+    font-size:0.8em;
+    padding-bottom:1em;
+}
+div.metachoice a {
+    color:#999;
+    text-decoration:none;
+}
+div.metachoice a:hover {
+    color:#555;
+}
+div.metachoice a.selected {
+    color:#09f;
+}
+div.metachoice a.selected:hover {
+    color:#555;
+}
+#galleria {
+    width: 100%; height: 400px; background-color: #fff;
+}
+#galleria .galleria-container {
+    background-color:transparent;
+}
+.info-box {
+    cursor: default;
+}
+
+.lalign {
+	text-align:left;
+}
+.ralign {
+	text-align:right;
+}
+.calign {
+	text-align:center;
+}
+
 /* Medium window ----------- */
 @media screen
 and (min-width : 880px)

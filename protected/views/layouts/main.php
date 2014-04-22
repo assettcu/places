@@ -19,6 +19,7 @@ $theme = "cupertino";
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/form.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/buttons.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/images.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/table.css" />
     
     <link rel="shortcut icon" href="<?php echo Yii::app()->request->baseUrl; ?>/library/images/favicon.ico" />
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
@@ -40,8 +41,9 @@ $theme = "cupertino";
     <script src="//ajax.googleapis.com/ajax/libs/jquery/<?php echo  Yii::app()->params["LOCALAPP_JQUERY_VER"]; ?>/jquery.min.js" type="text/javascript"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/<?php echo Yii::app()->params["LOCALAPP_JQUERYUI_VER"]; ?>/jquery-ui.min.js" type="text/javascript"></script>
 
-	<script src="//compass.colorado.edu/libraries/javascript/jquery/modules/cookie/jquery.cookie.js" type="text/javascript"></script>
-	<link rel="stylesheet" href="//compass.colorado.edu/libraries/javascript/jquery/jquery-ui/themes/<?=$theme?>/jquery-ui.css" type="text/css" />
+	<script src="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/cookie/jquery.cookie.js" type="text/javascript"></script>
+    <script src="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/sticky/jquery.sticky.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="<?php echo WEB_LIBRARY_PATH; ?>/jquery/themes/<?=$theme?>/jquery-ui.css" type="text/css" />
 	
 	<link rel="stylesheet" href="//compass.colorado.edu/libraries/javascript/jquery/modules/tiptip/tipTip.css" type="text/css" />
 	<script src="//compass.colorado.edu/libraries/javascript/jquery/modules/tiptip/jquery.tipTip.js"></script>

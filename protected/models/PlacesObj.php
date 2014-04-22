@@ -8,6 +8,17 @@ class PlacesObj extends FactoryObj
     parent::__construct("placeid","places",$placeid);
   }
   
+  public function pre_load()
+  {
+      if($this->is_valid_id() and !is_numeric($this->placeid)) {
+          $this->placeid = Yii::app()->db->createCommand()
+            ->select("placeid")
+            ->from("places")
+            ->where("placename=:placename",array(":placename"=>$this->placeid))
+            ->queryScalar();
+      }
+  }
+  
   public function post_load()
   {
     if(!$this->loaded) return;

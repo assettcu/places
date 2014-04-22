@@ -20,16 +20,16 @@ if(!is_file($yii)) {
 defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL',3);
 
 // define the root of this application
-defined('HTTP_HOST')    or define('HTTP_HOST',$_SERVER["HTTP_HOST"]);
-defined('_ROOT_')       or define('_ROOT_',dirname($_SERVER["HTTP_HOST"].$_SERVER["PHP_SELF"]));
-defined('_LOCAL_ROOT_') or define('_LOCAL_ROOT_',dirname(__FILE__));
+defined('ROOT') or define('ROOT',dirname(__FILE__));
+defined('HTTP_HOST') or define('HTTP_HOST',$_SERVER["HTTP_HOST"]);
+defined('WEB_ROOT') or define('WEB_ROOT',dirname($_SERVER["HTTP_HOST"].$_SERVER["PHP_SELF"]));
 
 // define local library paths (see StdLib class)
-defined('LOCAL_LIBRARY_PATH') or define('LOCAL_LIBRARY_PATH',_LOCAL_ROOT_.'\\library\\');
+defined('LOCAL_LIBRARY_PATH') or define('LOCAL_LIBRARY_PATH',ROOT.'\\library\\');
 defined('LOCAL_IMAGE_LIBRARY') or define('LOCAL_IMAGE_LIBRARY',LOCAL_LIBRARY_PATH."images\\");
 
 // define web library paths (see StdLib class)
-defined('WEB_LIBRARY_PATH') or define('WEB_LIBRARY_PATH','//'._ROOT_.'/library/');
+defined('WEB_LIBRARY_PATH') or define('WEB_LIBRARY_PATH','//'.WEB_ROOT.'/library/');
 defined('WEB_IMAGE_LIBRARY') or define('WEB_IMAGE_LIBRARY',WEB_LIBRARY_PATH."images\\");
 
 require_once($yii);

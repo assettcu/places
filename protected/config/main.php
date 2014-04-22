@@ -16,6 +16,7 @@ $mainconfig = array(
 	'import'=>array(
 		'application.models.*',
 		'application.models.graphics.*',
+        'application.models.system.*',
 		'application.components.*',
 	),
 
