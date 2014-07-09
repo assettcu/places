@@ -33,6 +33,5 @@ defined('WEB_LIBRARY_PATH') or define('WEB_LIBRARY_PATH','//'.WEB_ROOT.'/library
 defined('WEB_IMAGE_LIBRARY') or define('WEB_IMAGE_LIBRARY',WEB_LIBRARY_PATH."images/");
 
 include ROOT."/protected/models/Functions.php";
-
 require_once($yii);
 Yii::createWebApplication($config)->run();
