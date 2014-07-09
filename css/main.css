@@ -31,10 +31,12 @@ body
 	height: 4.375em; /** 70px / 16px = 4.375em */
 	clear: both;
 	padding-top: 1px;
+	border-bottom:2px solid #ccc;
 }
 #header div.logo {
-	width: 11.5625em;
+	width: 250px;
 	display:inline-block;
+	margin-left:25px;
 }
 #header div.logo a {
 	font-size: 1.875em; /* 30px / 16px = 1.875 */
@@ -63,6 +65,7 @@ body
 	float:right;
 	vertical-align:middle;
 	margin-top:0.75em; /* 12px / 16px = 1*/
+	margin-right:25px;
 }
 #header div.search input#searchbar {
 	font-size:1.125em; /* 18px / 16px = 1.125 */
@@ -98,6 +101,7 @@ body
 	margin: 10px auto 0px auto;
 	background-color:#f0f0f0;
 	color:#aaa;
+	z-index:5;
 }
 
 #footer a {
@@ -142,16 +146,20 @@ body
     width:100%;
     margin:0;
     padding:0;
+    height:auto;
 }
 .entry h2 {
     float: right;
-    width: 85%;
+    width: 82%;
 }
 .entry h3.nav {
     float: left;
     margin-top: 0.72727em;
-    width:5.5em;
-    margin-right:0.5em;
+    width:7.3em;
+   /** margin-right:0.5em; **/
+}
+.entry h3.nav.stuck {
+	margin-top: 70px;
 }
 .entry h3.nav ul {
     margin:0;
@@ -167,6 +175,15 @@ body
     margin-bottom:0;
     line-height: 1.5em;
     text-align:right;
+}
+.entry h3.nav ul li div {
+    display:block;
+    text-decoration:none;
+    color:#333;
+    width:auto!important;
+    padding:.25em .5em .25em 0;
+    border-right:2px solid #f90;
+    display:none;
 }
 .entry h3.nav ul li a {
     display:block;
@@ -184,25 +201,20 @@ body
 }
 .entry .content {
     float:right;
-    width:85%;
+    width:82%;
     margin:0;
     padding:0;
-    margin-bottom:1600px;
 }
 .entry .images {
     float:left;
     padding:0em;
-    width:72%;
-    margin-bottom:60px;
+    width:800px;
+    margin-bottom:20px;
 }
 
 .entry div.meta {
-    float: right;
-    width: 26%;
     margin-top: 0;
-    border-right:2px solid #888;
 }
-
 div.meta ul {
     list-style:none;
     padding:0;
@@ -218,15 +230,13 @@ div.meta ul li {
 div.meta ul li div.label {
     font-weight:bold;
     font-style:italic;
+    background-color:#ccc;
     color:#555;
+    padding:5px;
 }
 div.meta ul li div.value {
     padding-left:0.9em;
     padding-top:0.25em;
-}
-div.metatitle {
-    font-size:1em;
-    font-style: italic;
 }
 div.metachoice {
     font-size:0.8em;
@@ -246,7 +256,7 @@ div.metachoice a.selected:hover {
     color:#555;
 }
 #galleria {
-    width: 100%; height: 400px; background-color: #fff;
+    width: 100%; height: 500px; background-color: #fff;
 }
 #galleria .galleria-container {
     background-color:transparent;
@@ -264,160 +274,22 @@ div.metachoice a.selected:hover {
 .calign {
 	text-align:center;
 }
-
-/* Medium window ----------- */
-@media screen
-and (min-width : 880px)
-and (max-width : 1105px) {
-/* Styles */
-	#page {
-		max-width: 51.875em; /* 830px / 16px = 51.875 */
-	}
-	#footer span.footer-divide {
-		display:none;
-	}
-	#footer div.footer-culink {
-		display:block;
-	}
+div.breadcrumbs {
+	margin-bottom:15px;
 }
-
-/* Medium window ----------- */
-@media screen
-and (max-width : 879px) {
-/* Styles */
-	#page {
-		max-width: 30.0625em; /* 481px / 16px = 30.0625 */
-	}
-	#header div.search {
-		float:right;
-	}
-	#header div.search input#searchbar {
-		width: 9em;
-	}
-	h1 {
-		font-size: 2em;	
-	}
-	ul.grid-nav li {
-		display:block;
-		margin: 0 0 5px;
-	}
-	ul.rig {
-		margin-left: 0em;
-		padding-left:2em;
-	}
-	ul.rig li {
-		width: 47% !important;
-		margin: 0 0 20px;
-	}
-	#footer span.footer-appicon-divide {
-		display:none;
-	}
-	#footer div.mid-footer {
-		text-align:left;
-		float:left;	
-		width: 25em;
-		display:block;
-		margin:0;
-	}
-	#footer div.right-footer {
-		float:right;
-		width: 12.5em; /** 150px / 12px = 12.5 */
-		text-align:right;
-		margin-left:0;
-	}
+div.breadcrumbs a {
+	color:#f90;
+	text-decoration:none;
+	font-variant:small-caps;
 }
-
-/* Smartphones (landscape) ----------- */
-@media screen
-and (min-width : 321px)
-and (max-width : 530px) {
-/* Styles */
-	#page {
-		max-width: 20.0625em; /* 321px / 16px = 20.0625 */
-	}
-	#header div.logo {
-		width:100%;
-		text-align:center;
-	}
-	#header div.search {
-		text-align:center;
-		width:100%;
-	}
-	h1 {
-		font-size: 2em;	
-	}
-	ul.grid-nav li {
-		display:block;
-		margin: 0 0 5px;
-	}
-	ul.rig {
-		margin-left: 0;
-	}
-	ul.rig li {
-		width: 100% !important;
-		margin: 0 0 20px;
-	}
-	#footer span.footer-appicon-divide,
-	#footer span.footer-divide {
-		display:none;
-	}
-	#footer div.left-footer,
-	#footer div.mid-footer,
-	#footer div.right-footer {
-		text-align:center;
-		display:block;
-		width:100%;
-		margin:0;
-		padding:0;
-	}
-	#footer div.mid-footer div.footer-culink {
-		display:block;
-	}
-
+div.search-query {
+	margin-top:5px;
+	margin-bottom:15px;
 }
-
-/* Smartphones (portrait) ----------- */
-@media screen
-and (max-width : 320px) {
-/* Styles */
-	#page {
-		max-width: 20em; /* 320px / 16px = 20 */
-	}
-	#header div.logo {
-		width:100%;
-		text-align:center;
-	}
-	#header div.search {
-		display:none;
-	}
-	h1 {
-		font-size: 2em;	
-	}
-	ul.grid-nav li {
-		display:block;
-		margin: 0 0 5px;
-	}
-	ul.rig {
-		margin-left: 0;
-	}
-	ul.rig li {
-		width: 100% !important;
-		margin: 0 0 20px;
-	}
-	#footer span.footer-appicon-divide,
-	#footer span.footer-divide {
-		display:none;
-	}
-	#footer div.left-footer,
-	#footer div.mid-footer,
-	#footer div.right-footer {
-		text-align:center;
-		display:block;
-		width:100%;
-		margin:0;
-		padding:0;
-	}
-	#footer div.mid-footer div.footer-culink {
-		display:block;
-	}
+div.search.stuck {
+	z-index:10001;
+	width:auto;
+	text-align:right;
+	padding-top:4px;
+	margin-left:610px;
 }

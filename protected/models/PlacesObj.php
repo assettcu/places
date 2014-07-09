@@ -266,7 +266,7 @@ class PlacesObj extends FactoryObj
 			}
 			$imager = new Imager($path);
 			$imager->add_attribute("class","slideshow-img");
-			$imager->add_attribute("data-big",$picture->path);
+			$imager->add_attribute("data-big",Yii::app()->baseUrl.$picture->path);
 			$imager->add_attribute("data-title",$picture->caption);
 			$imager->add_attribute("data-description",str_replace("'","",$picture->description));
 			$imager->render();
@@ -311,6 +311,14 @@ class PlacesObj extends FactoryObj
     $command->bindParam(":placeid",$this->placeid);
     
     return ($command->queryScalar()>0);
+  }
+  
+  public function get_parent()
+  {
+      if($this->parentid == 0) {
+          return null;
+      }
+      return new PlacesObj($this->parentid);
   }
   
 }

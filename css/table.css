@@ -129,6 +129,17 @@ table#post-form-table tr th div.error {
 	color:#CC0000;
 }
 
+/** Classes Table **/
+table.classes-table {
+	border-spacing:3px;
+}
+table.classes-table tr td.empty {
+	border:2px solid #ccc;
+	padding:20px;
+	vertical-align:middle;
+	font-size:1.1em;
+}
+
 /** Admin Feedback Table **/
 table#issues-table {
 	border-collapse:separate;

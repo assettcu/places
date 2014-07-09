@@ -227,9 +227,7 @@ class SiteController extends Controller
     
 	public function actionSearch()
 	{
-		$q = $_REQUEST["q"];
-		
-		$this->render('search');
+		$this->render('search',$_REQUEST);
 	}
 	
     /**

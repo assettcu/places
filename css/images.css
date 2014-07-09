@@ -53,3 +53,23 @@ ul.rig li p {
 	line-height:1.5em;
 	color: #999;
 }
+
+ul.rig li div.placetype {
+	font-size: 0.9em;
+	color: #999;
+}
+
+ul#ri-list {
+	text-align: center;
+}
+ul#ri-list li {
+	width: 24%;
+	min-height:75px;
+}
+ul#ri-list li div.label {
+	padding:5px;
+	white-space:nowrap;
+}
+ul#ri-list li div.value {
+	padding:5px;
+}

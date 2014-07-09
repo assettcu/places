@@ -3,9 +3,7 @@
 $type = @$_REQUEST["type"];
 if($type == "") $type="building";
 
-$organizer = new Places();
-$places = $organizer->load_places($type);
-
+$places = load_places($type);
 ?>
 <ul class="rig columns-4">
     <?php foreach($places as $place):
@@ -15,7 +13,7 @@ $places = $organizer->load_places($type);
                 $thumb = $image->get_thumb();
     ?>
     <li>
-        <a href="<?php echo Yii::app()->createUrl('place'); ?>?id=<?php echo $place->placeid; ?>">
+        <a href="<?php echo Yii::app()->createUrl('place'); ?>?id=<?php echo $place->placename; ?>">
             <div class="image-container">
                 <img src="<?php echo $thumb; ?>" width="100%" height="100%" />
             </div>

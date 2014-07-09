@@ -19,14 +19,11 @@ class MetadataObj extends FactoryObj
       if($this->is_column($index) and $index!="placeid")
       {
         $this->data[$index]["value"] = $val;
-        $displayname = $this->load_metadata_display($index);
-        $this->data[$index]["display_name"] = $displayname;
-        $metatype = $this->load_metadata_metatype($index);
-        $this->data[$index]["metatype"] = $metatype;
-		$inputtype = $this->load_metadata_inputtype($index);
-		$this->data[$index]["inputtype"] = $inputtype;
-		$sorder = $this->load_metadata_sorder($index);
-		$this->data[$index]["sorder"] = $sorder;
+        $this->data[$index]["display_name"] = $this->load_metadata_display($index);
+        $this->data[$index]["metatype"] = $this->load_metadata_metatype($index);
+		$this->data[$index]["inputtype"] = $this->load_metadata_inputtype($index);
+		$this->data[$index]["sorder"] = $this->load_metadata_sorder($index);
+        $this->data[$index]["icon"] = $this->load_metadata_icon($index);
       }
     }
 	uasort($this->data, array('MetadataObj','sort_metadata'));
@@ -93,6 +90,22 @@ class MetadataObj extends FactoryObj
     $conn = Yii::app()->db;
     $query = "
       SELECT      sorder
+      FROM        {{metadataext}}
+      WHERE       metadata_machinecode = :mdcode
+      AND         column_name = :cname;
+    ";
+    $command = $conn->createCommand($query);
+    $command->bindParam(":mdcode",$this->table);
+    $command->bindParam(":cname",$index);
+    
+    return $command->queryScalar();
+  }
+  
+  public function load_metadata_icon($index)
+  {
+    $conn = Yii::app()->db;
+    $query = "
+      SELECT      icon
       FROM        {{metadataext}}
       WHERE       metadata_machinecode = :mdcode
       AND         column_name = :cname;

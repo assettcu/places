@@ -30,7 +30,9 @@ defined('LOCAL_IMAGE_LIBRARY') or define('LOCAL_IMAGE_LIBRARY',LOCAL_LIBRARY_PAT
 
 // define web library paths (see StdLib class)
 defined('WEB_LIBRARY_PATH') or define('WEB_LIBRARY_PATH','//'.WEB_ROOT.'/library/');
-defined('WEB_IMAGE_LIBRARY') or define('WEB_IMAGE_LIBRARY',WEB_LIBRARY_PATH."images\\");
+defined('WEB_IMAGE_LIBRARY') or define('WEB_IMAGE_LIBRARY',WEB_LIBRARY_PATH."images/");
+
+include ROOT."/protected/models/Functions.php";
 
 require_once($yii);
 Yii::createWebApplication($config)->run();

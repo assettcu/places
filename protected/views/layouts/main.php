@@ -20,8 +20,11 @@ $theme = "cupertino";
     <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/buttons.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/images.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/table.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/breadcrumb.css" />
     
     <link rel="shortcut icon" href="<?php echo Yii::app()->request->baseUrl; ?>/library/images/favicon.ico" />
+    <link rel="stylesheet" href="<?php echo Yii::app()->baseUrl; ?>/library/fonts/icomoon/style.css" />
+    
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 	
 	<script type="text/javascript">
@@ -53,7 +56,7 @@ $theme = "cupertino";
 		jQuery(document).ready(function($){
 			$("#search").click(function(){
 			    $("form#search-form").submit();
-			    return false;
+			    return true;
 			});
 		});
 	</script>
@@ -72,7 +75,11 @@ $theme = "cupertino";
     			</div>
     		</a>
 		</div>
-		<div class="search">
+		<?php if(Yii::app()->controller->action->id == "place"): ?>
+		<div class="search sticky" sticky="150">
+		<?php else: ?>
+        <div class="search">
+		<?php endif; ?>
 		    <form method="get" action="search" id="searchform">
     		    <input type="text" id="searchbar" name="q" value="<?php echo @$_REQUEST["q"]; ?>" />
     		    <a href="#" id="search" class="button grey">Search</a>
