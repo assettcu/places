@@ -5,7 +5,7 @@
 
 // This is the main Web application configuration. Any writable
 // CWebApplication properties can be configured here.
-return array(
+$mainconfig = array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
 	'name'=>'Places',
 
@@ -16,6 +16,7 @@ return array(
 	'import'=>array(
 		'application.models.*',
 		'application.models.graphics.*',
+        'application.models.system.*',
 		'application.components.*',
 	),
 
@@ -36,14 +37,6 @@ return array(
 				'<action:\w+>'=>'site/<action>',
 			),
 		),
-		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=places',
-			'emulatePrepare' => true,
-			'username' => 'places',
-			'password' => 'equalizations democratizations agrarianize remoralizing',
-			'charset' => 'utf8',
-      		'tablePrefix' => '',
-		),
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors
             'errorAction'=>'site/error',
@@ -63,13 +56,42 @@ return array(
 			'autoRender' => true,
 		),
 	),
-	
-
     // application-level parameters that can be accessed
     // using Yii::app()->params['paramName']
     'params'=>array(
         'LOCALAPP_JQUERY_VER'       => '1.10.2',
         'LOCALAPP_JQUERYUI_VER'     => '1.10.3',
-        'LOCALAPP_SERVER'           => ($_SERVER["SERVER_NAME"]=="assettdev.colorado.edu")?"assettdev.colorado.edu":"compass.colorado.edu",
     ),
+    // If install file still exists, redirect to install page
+    'catchAllRequest'=>(!file_exists(dirname(__FILE__).'/main-ext.php')) ? array('site/install') : null,
 );
+
+
+# Function to blend two arrays together
+function mergeArray($a,$b)
+{
+    $args=func_get_args();
+    $res=array_shift($args);
+    while(!empty($args))
+    {
+        $next=array_shift($args);
+        foreach($next as $k => $v)
+        {
+            if(is_integer($k))
+                isset($res[$k]) ? $res[]=$v : $res[$k]=$v;
+            else if(is_array($v) && isset($res[$k]) && is_array($res[$k]))
+                $res[$k]=mergeArray($res[$k],$v);
+            else
+                $res[$k]=$v;
+        }
+    }
+    return $res;
+}
+
+# If extended attributes are found, include them in the main configuration details
+if(is_file(dirname(__FILE__).'/main-ext.php')) {
+    $mainconfig = mergeArray($mainconfig, require(dirname(__FILE__).'/main-ext.php'));
+}
+
+# Return the details
+return $mainconfig;

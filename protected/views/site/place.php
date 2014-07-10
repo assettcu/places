@@ -1,473 +1,364 @@
 <?php
-$placeid = $_REQUEST["id"];
+$id = $_REQUEST["id"];
+$place = new PlacesObj($id);
 
-$place = new PlacesObj($placeid);
-if(!$place->loaded){
-	$this->redirect("error");
-	exit;
+if(!$place->loaded) :
+?>
+<div style="width:500px;margin-left:30%;margin-top:150px;">
+    <?php echo StdLib::load_image("nolocation","128px"); ?>
+    <div style="width:330px;display:inline-block;vertical-align: top;padding-left:15px;">
+        <h1>Could not find place</h1>
+        <p>This place has not been added yet. <a href="<?php echo Yii::app()->baseUrl; ?>">Go Back</a></p>
+    </div>
+</div>
+<?php 
+else:
+
+# Session will keep which year/term (yt) user is looking at across the application
+$yt = "20144";
+if(!isset($_SESSION)) {
+    session_start();
 }
+if(isset($_SESSION["yt"]) and strlen($_SESSION["yt"]) == 5) {
+    $yt = $_SESSION["yt"];
+}
+if(isset($_REQUEST["yt"]) and strlen($_REQUEST["yt"]) == 5) {
+    $yt = $_REQUEST["yt"];
+    $_SESSION["yt"] = $yt;
+}
+
+# Load the metadata to display in the "Relevant Information" tab
 $place->load_metadata();
 
-$place->load_pictures();
-$classrooms = $place->get_children("classroom");
-$labs       = $place->get_children("lab");
-
-$table_width = 1130;
-$cols = 5;
-$colsize = $table_width / $cols - 10;
-$count=0;
-
-switch($place->placetype->machinecode)
-{
-	case "building": $image = "school"; break;
-	case "classroom": $image = "chalkboard"; break;
-    case "lab": $image = "lab"; break;
-	default: $image = "school"; break;
+# Load classes for a building
+if($place->placetype->machinecode == "building") {
+    $classes = StdLib::external_call(
+        "http://assettdev.colorado.edu/ascore/api/buildingclasses",
+        array(
+            "building"  => $place->metadata->data["building_code"]["value"],
+            "term"      => $yt, # Semester/Year to lookup
+        )
+    );
 }
-$marker = StdLib::load_image_source($image);
-$marker = StdLib::make_path_local($marker);
-$icon = new Imager($marker);
-$icon->width = "36px";
-$icon->height = "36px";
-$icon->styles["float"] = "left";
-$icon->styles["margin-top"] = "-6px";
-$icon->styles["margin-right"] = "6px";
-
-$list_height = $icon->height - 28;
-
-$place->load_parent();
-?>
-
-<?php 
-if(0):
-if(Yii::app()->user->name == "carneymo") :
-
-$place->render_pictures(true);
-
-echo "<pre>";
-var_dump($place);
-
-
-
-endif;
-endif;
-?>
-<div class="breadcrumb-bar ui-widget-header" style="font-size:13px;font-weight:normal;">
-   &gt; <a href="<?=Yii::app()->baseUrl;?>/">Buildings</a> &gt; 
-   <?php if($place->parent_->placetype->machinecode=="building") echo "<a href='".Yii::app()->createUrl('place')."?id=".$place->parent_->placeid."'>".$place->parent_->placename."</a> &gt; "; ?> <?=$place->placename;?>
-</div>
-
-<style>
-img.slideshow-img {
-	display:none;
+# Load classes for a classroom
+else if($place->placetype->machinecode == "classroom") {
+    $classes = StdLib::external_call(
+        "http://assettdev.colorado.edu/ascore/api/classroomclasses",
+        array(
+            "classroom" => $place->placename,
+            "term"      => $yt, # Semester/Year to lookup
+        )
+    );
 }
-div.admin-bar {
-    float:right;
-    padding:0;
-    margin:0;
+# Don't load classes if other
+else {
+    $classes = array();
 }
-div.admin-button {
-    border:1px solid #69f;
-    padding:3px;
-    width:20px;
-    border-radius:5px;
-    display:inline-block;
-    opacity:0.5;
-}
-.active {
-    cursor:pointer;
-}
-.disabled {
-    cursor:default;
-}
-.selected {
-    cursor:pointer;
-}
-</style>
-<?php if(isset(Yii::app()->user) and !Yii::app()->user->isGuest): ?>
-<div class="admin-bar">
-    <div class="admin-button ui-widget-header active add-pictures" title="Manage Pictures">
-        <?=StdLib::load_image("bag","20px","20px");?>
-    </div>
-    <div class="admin-button ui-widget-header active edit-place" title="Edit <?=$place->placetype->singular;?> Information">
-        <?=StdLib::load_image("pencil_edit","20px","20px");?>
-    </div>
-    <div class="admin-button ui-widget-header active reorder" title="Configure <?=$place->placetype->singular;?>">
-        <?=StdLib::load_image("options","20px","20px");?>
-    </div>
-</div>
-<?php endif; ?>
 
-<h1 style="margin-top:10px;margin-left:5px;">
-	<?=$icon->render(); ?> <?=$place->placename;?> <span style="font-weight:normal;font-size:12px;color:#ccc;">(<?=$place->placetype->singular;?>)</span>
-	<span class="date-taken" style="font-size:15px;color:#89f;">Last Updated: <?=date("F jS, Y",strtotime($place->date_modified));?></span>
-</h1>
+# Load children places
+$childplaces = load_child_places($place->placeid);
 
-<?php 
-$modules = array();
-switch($place->placetype->machinecode)
-{
-    case "building": $modules = array("details","classrooms","labs","googlemap"); break;
-    case "classroom": $modules = array("details"); break;
-    case "lab": $modules = array("details"); break;
-    default: $modules = array("details");
+# Get an array of child names
+$childplace_names = array();
+foreach($childplaces as $childplace) {
+    $childplace_names[] = $childplace->placename;
 }
 ?>
 
-<div class="tablinks">
-    <?php if(in_array("details",$modules)): ?>
-	<a href="#details" id="details-link" class="tablink anchor-link">Details</a> |
-	<?php endif; ?>
-    <?php if(in_array("classrooms",$modules)): ?>
-    <a href="#classrooms" id="places-link" class="tablink anchor-link">Classrooms</a> |
-    <?php endif; ?>
-    <?php if(in_array("labs",$modules)): ?>
-    <a href="#labs" id="labs-link" class="tablink anchor-link">Labs</a> |
-    <?php endif; ?>
-    <?php if(in_array("googlemap",$modules)): ?>
-    <a href="#googlemap" id="googlemap-link" class="tablink anchor-link">Google Map</a>
-    <?php endif; ?>
-</div>
-
-<style>
-div#details div.header,
-div#classrooms div.header,
-div#googlemap div.header,
-div#labs div.header {
-    padding:6px;
-    width:97%;
-    font-size:15px;
-    font-weight:bold;
-    margin-bottom:10px;
-}
-div#details,
-div#googlemap,
-div#classrooms,
-div#labs {
-    margin-bottom:25px;
-    min-height:50px;
-}
-</style>
-
-<div id="details">
-    <div class="ui-widget-header header">Details</div>
-	<div class="obj-container" style="width:95%;margin:auto;margin-bottom:30px;">
-		
-		<div style="width:100%;text-align:right;margin-bottom:5px;">
-			View information as for:
-			<select>
-				<option value="both">Both Students and Teachers</option>
-				<option value="students">Students</option>
-				<option value="teachers">Teachers</option>
-			</select>
-		</div>
-		
-		<div class="" style="width:600px;float:left;">
-			<div id="galleria">
-				<?php 
-				if($place->has_pictures()) {
-					$place->render_pictures(true);
-				} 
-				else {
+<div class="entry">
+    
+    <ul id="breadcrumb" class="sticky" sticky="150">
+      <li><a href="<?php echo Yii::app()->baseUrl; ?>"><span class="icon icon-home"> </span> Home</a></li>
+      <?php if($place->placetype->machinecode == "classroom"): ?>
+      <li>
+          <a href="<?php echo Yii::app()->createUrl('place'); ?>?id=<?php echo $place->get_parent()->placename; ?>">
+            <span class="icon icon-office"> </span> 
+            <?php echo $place->get_parent()->placename; ?>
+          </a>
+      </li>
+      <li><a href="#" onclick="javascript:return false;"><span class="icon icon-books"> </span> <?php echo $place->placename; ?></a></li>
+      <?php elseif($place->placetype->machinecode == "lab"): ?>
+      <li>
+          <a href="<?php echo Yii::app()->createUrl('place'); ?>?id=<?php echo $place->get_parent()->placename; ?>">
+            <span class="icon icon-office"> </span> 
+            <?php echo $place->get_parent()->placename; ?>
+          </a>
+      </li>
+      <li><a href="#" onclick="javascript:return false;"><span class="icon icon-lab"> </span> <?php echo $place->placename; ?></a></li>
+      <?php else: ?>
+      <li><a href="#" onclick="javascript:return false;"><span class="icon icon-office"> </span> <?php echo $place->placename; ?></a></li>
+      <?php endif; ?>
+    </ul>
+    
+    <h2><?php echo $place->placename; ?></h2>
+    <h3 class="nav sticky" sticky="150">
+        <ul>
+            <li><div id="menu-placename"><?php echo $place->placename; ?></div></li>
+            <li><a href="#home" onclick="javascript:return false;">Images <span class="icon icon-image2"> </span></a></li>
+            <li><a href="#relevant-info" onclick="javascript:return false;"><?php echo $place->placetype->singular; ?> Info <span class="icon icon-office"> </span></a></li>
+            <?php if($place->placetype->machinecode == "building"): ?>
+            <li><a href="#roomuniquename" onclick="javascript:return false;">Rooms <span class="icon icon-enter"> </span></a></li>
+            <li><a href="#googlemap" onclick="javascript:return false;">Google Map <span class="icon icon-map"> </span></a></li>
+            <?php endif; ?>
+            <li><a href="#buildingclasses" onclick="javascript:return false;">Classes <span class="icon icon-list"> </span></a></li>
+        </ul>
+    </h3>
+    <div class="content">
+        <div class="images">
+            <div id="galleria">
+                <?php 
+                if($place->has_pictures()) {
+                    $place->render_pictures(true);
+                } 
+                else {
                     $place->render_no_image();
-				}
-				?>
-			</div>
-			<br class="clear" />
-		</div>
-		
-		<div class="" style="float:left;border-left:1px solid #ccc;width:450px;padding-left:10px;margin-right:10px;">
-			<div class="ui-widget-header" style="padding:4px;font-size:15px;">
-				<?=$place->placetype->singular;?> Information
-			</div>
-			<?php if(isset(Yii::app()->user) and !Yii::app()->user->isGuest): ?>
-			<div class="admin-bar">
-			    <div class="admin-button ui-widget-header active edit-place" style="margin-bottom:4px;margin-top:2px;margin-left:3px;" title="Edit <?=$place->placetype->singular;?> Information">
-			        <?=StdLib::load_image("pencil_edit","20px","20px");?>
-			    </div><br/>
-				<div class="admin-button ui-widget-header active add-infotype" style="margin-bottom:4px;margin-top:2px;margin-left:3px;"  title="Manage Information Fields">
-					<?=StdLib::load_image("options_2","20px","20px");?>
-				</div><br/>
-			</div>
-			<?php endif; ?>
-			<div class="rooms-list" style="overflow-y:scroll;height:370px;">
-				<?php foreach($place->metadata->data as $index=>$data): ?>
-				<?php if($data["metatype"]!="students" and $data["metatype"]!="teachers" and $data["metatype"]!="both") continue; ?>
-					<div class="<?=$data["metatype"];?>">
-						<div class="info-box" style="padding:7px;padding-right:0px;border-bottom:1px solid #cdf;background-color:#09f;color:#fff;font-weight:bold;">
-							<?=$data["display_name"];?>
-						</div>
-						<div class="room-link" style="padding:7px;padding-right:0px;border-bottom:1px solid #cdf;">
-							<?=$data["value"];?>
-						</div>
-					</div>
-				<?php endforeach; ?>
-			</div>
-		</div>
-		<br class="clear" />
-	</div>
-</div>
-
-<?php if(in_array("classrooms",$modules)): ?>
-<div id="classrooms">
-    <div class="ui-widget-header header">Classrooms</div>
-	<?php if(isset(Yii::app()->user) and !Yii::app()->user->isGuest): ?>
-	<div class="admin-bar" style="margin-right:25px;">
-	    <div class="admin-button ui-widget-header active add-classroom" title="Add a Classroom">
-	        <?=StdLib::load_image("plus_2","20px");?>
-	    </div>
-	    <div class="admin-button ui-widget-header active reorder disabled" title="Reorder Classrooms">
-	        <?=StdLib::load_image("wizard","20px");?>
-	    </div>
-	</div>
-	<?php endif; ?>
-    <?php if(empty($classrooms)): ?>
-        <div style="font-size:18px;margin-left:25px;">Classrooms for this building have not been added yet. Please stay tuned.</div>
-    <?php else: ?>
-    <table class="imgtable">
-        <?php $count = 0; foreach($classrooms as $classroom):  ?>
-            <?php if($count%$cols==0): ?>
-            <tr>
-            <?php endif; ?>
-                <td width="<?=100/$cols;?>%" height="150px" placeid="<?=$classroom->placeid;?>" class="img-holder">
-                	<div class="img-container" style="position:relative;margin:0;padding:0;width:100%;height:100%;">
-	                    <?php $classroom->render_first_image("200px","133px","thumb"); ?>
-	                    <div class="image"><?=$classroom->placename;?></div>
+                }
+                ?>
+            </div>
+            <br class="clear" />
+        </div>
+        
+        <br class="clear" />
+        <h3 name="relevant-info"><?php echo $place->placetype->singular; ?> Information</h3>
+        <div class="meta">
+            <div class="metachoice">
+                <a href="#" class="ri selected" onclick="javascript:return false;">All</a> |
+                <a href="#" class="ri" onclick="javascript:return false;">Students</a> |
+                <a href="#" class="ri" onclick="javascript:return false;">Teachers</a>
+            </div>
+            <ul id="ri-list">
+                <?php foreach($place->metadata->data as $index=>$data): ?>
+                <?php if(($data["metatype"]!="students" and $data["metatype"]!="teachers" and $data["metatype"]!="both") or $data["value"] == "") continue; ?>
+                <li class="<?=$data["metatype"];?>">
+                    <div class="label"><?php if(isset($data["icon"])) { ?><span class="icon <?php echo $data["icon"]; ?>"> </span><?php } echo $data["display_name"]; ?></div>
+                    <div class="value" style="word-wrap:break-word;"><?php echo $data["value"]; ?></div>
+                </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+        
+        <br class="clear" />
+        <br class="clear" />
+        <br class="clear" />
+        <?php if($place->placetype->machinecode == "building"): ?>
+        <h3 name="roomuniquename">Rooms in this <?php echo $place->placetype->singular; ?></h2>
+        
+        <ul class="rig columns-4">
+        <?php if(!empty($childplaces)):  ?>
+            <?php foreach($childplaces as $childplace):
+                      $childplace_names[] = $childplace->placename;
+                      $image = $childplace->load_first_image();
+                      if(!$image->loaded) {
+                        $image = new PictureObj(1);
+                      }
+                      if(!$image->loaded) {
+                          continue;
+                      }
+                      $thumb = $image->get_thumb();
+            ?>
+            <li>
+                <a href="<?php echo Yii::app()->createUrl('place'); ?>?id=<?php echo $childplace->placename; ?>">
+                    <div class="image-container">
+                        <img src="<?php echo $thumb; ?>" width="100%" height="100%" />
                     </div>
+                    <h3><?php echo $childplace->placename; ?></h3>
+                    <div class="placetype"><?php echo $childplace->placetype->singular; ?></div>
+                    <?php if(isset($childplace->description) and !empty($childplace->description)): ?>
+                    <p><?php echo $childplace->description; ?></p>
+                    <?php endif; ?>
+                </a>
+            </li>
+            <?php endforeach; ?>
+        <?php endif; ?>
+        </ul>
+
+        <h3 name="googlemap">Google Map</h2>
+        
+        <div class="calign">
+            <?php echo $place->metadata->data["googlemap"]["value"]; ?>
+        </div>
+        
+        <br class="clear" />
+        <?php endif; ?>
+        
+        <a name="yt"></a>
+        <h3 name="buildingclasses">Classes in this <?php echo $place->placetype->singular; ?></h2>
+        <div class="right">
+            Classes for 
+            <select name="yt" id="yt-select">
+                <option value="20144" <?php if((isset($_REQUEST["yt"]) and $_REQUEST["yt"] == "20144") or (!isset($_REQUEST["yt"]) and isset($_SESSION["yt"]) and $_SESSION["yt"] == "20144")) : ?>selected='selected'<?php endif; ?>>Summer 2014</option>
+                <option value="20137" <?php if((isset($_REQUEST["yt"]) and $_REQUEST["yt"] == "20137") or (!isset($_REQUEST["yt"]) and isset($_SESSION["yt"]) and $_SESSION["yt"] == "20137")) : ?>selected='selected'<?php endif; ?>>Fall 2013</option>
+            </select>
+            <script>
+            jQuery(document).ready(function($){
+              $("#yt-select").change(function(){
+                 window.location = "<?php echo Yii::app()->createUrl('place'); ?>?id=<?php echo $place->placename; ?>&yt="+$("#yt-select").val()+"#yt";
+              });
+            });
+            </script>
+        </div>
+        <div class="hint" style="font-size:0.8em;margin:-10px 0px 10px 0px;">Note: Arts &amp; Sciences classes only.</div>
+        
+        <table class="fancy-table classes-table">
+            <thead>
+                <tr>
+                    <th width="82px">Course</th>
+                    <th class="calign">Section</th>
+                    <th width="30%">Class</th>
+                    <th width="86px" class="calign">Room</th>
+                    <th class="calign">Term</th>
+                    <th class="calign">Days</th>
+                    <th class="calign">Times</th>
+                </tr>
+            </thead>
+            <?php if(count($classes) > 0): ?>
+            <?php $count=0; foreach($classes as $class): $count++; ?>
+                <?php
+                # Do some processing before displaying
+                $starttime  = $class["timestart"];
+                $endtime    = $class["timeend"];
+                $datetime = new DateTime($starttime);
+                $starttime = $datetime->format("g:i a");
+                $datetime = new DateTime($endtime);
+                $endtime = $datetime->format("g:i a");
+                
+                $catalog_term = "2013-14";
+                ?>
+            <tr class="<?php echo ($count%2==0) ? 'odd' : 'even'; ?>">
+                <td>
+                    <a href="http://www.colorado.edu/catalog/<?php echo $catalog_term; ?>/courses?subject=<?php echo $class["subject"]; ?>&number=<?php echo $class["course"]; ?>" target="_blank">
+                        <?php echo $class["subject"]; ?> <?php echo $class["course"]; ?>
+                    </a>
                 </td>
-                <?php if(count($classrooms)==$count+1 and count($classrooms)<$cols): ?>
-                <?php for($count;$count<$cols;$count++): ?>
-                    <td class="empty">&nbsp;</td>
-                <?php endfor; ?>
+                <td class="calign"><?php echo substr("00".$class["section"],-3,3); ?></td>
+                <td><?php echo $class["title"]; ?></td>
+                <?php if($place->placetype->machinecode == "building" and in_array($class["building"]." ".$class["roomnum"],$childplace_names,FALSE)): ?>
+                <td class="calign">
+                    <a href="<?php echo Yii::app()->createUrl("place"); ?>?id=<?php echo $class["building"]." ".$class["roomnum"]; ?>"><?php echo $class["building"]." ".$class["roomnum"]; ?></a>
+                </td>
+                <?php else: ?>
+                <td class="calign"><?php echo $class["building"]." ".$class["roomnum"]; ?></td>
                 <?php endif; ?>
-            <?php if($count%$cols==$cols-1): ?>
+                <td class="calign"><?php 
+                    $term = substr($class["yearterm"],-1,1);
+                    switch($term) {
+                        case 7: $term = "Fall"; break;
+                        case 1: $term = "Spring"; break;
+                        case 4: $term = "Summer"; break;
+                        default: $term = $term; break;
+                    }
+                    echo $term." ".substr($class["yearterm"],0,4);
+                ?></td>
+                <td class="calign"><?php echo $class["meetingdays"]; ?></td>
+                <td class="calign"><?php echo @$starttime." - ".@$endtime; ?></td>
+            </tr>
+            <?php endforeach; ?>
+            <?php else: ?>
+            <tr>
+                <td class="empty" colspan="7">
+                    There are no classes in this <?php echo strtolower($place->placetype->singular); ?> currently.
+                </td>
             </tr>
             <?php endif; ?>
-        <?php $count++; endforeach; ?>
-    </table>
-    <?php endif; ?>
-</div>
-<?php endif; ?>
-
-<?php if(in_array("labs",$modules)): ?>
-<div id="labs">
-    <div class="ui-widget-header header">Labs</div>
-    <?php if(isset(Yii::app()->user) and !Yii::app()->user->isGuest): ?>
-    <div class="admin-bar" style="margin-right:25px;">
-        <div class="admin-button ui-widget-header active add-lab" title="Add a Lab">
-            <?=StdLib::load_image("plus_2","20px");?>
-        </div>
-        <div class="admin-button ui-widget-header active reorder disabled" title="Reorder Labs">
-            <?=StdLib::load_image("wizard","20px");?>
-        </div>
+        </table>
     </div>
-    <?php endif; ?>
-    <?php if(empty($labs)): ?>
-        <div style="font-size:18px;margin-left:25px;">Labs for this building have not been added yet. Please stay tuned.</div>
-    <?php else: ?>
-    <table class="imgtable">
-        <?php $count = 0; foreach($labs as $lab): ?>
-            <?php if($count%$cols==0): ?>
-            <tr>
-            <?php endif; ?>
-                <td width="<?=100/$cols;?>%" height="150px" placeid="<?=$lab->placeid;?>" class="img-holder">
-                    <div class="img-container" style="position:relative;margin:0;padding:0;width:100%;height:100%;">
-                        <?php $lab->render_first_image("200px","133px","thumb"); ?>
-                        <div class="image"><?=$lab->placename;?></div>
-                    </div>
-                </td>
-                <?php if(count($labs)==$count+1 and count($labs)<$cols): ?>
-                <?php for($count;$count<$cols;$count++): ?>
-                    <td class="empty">&nbsp;</td>
-                <?php endfor; ?>
-                <?php endif; ?>
-            <?php if($count%$cols==$cols-1): ?>
-            </tr>
-            <?php endif; ?>
-        <?php $count++; endforeach; ?>
-    </table>
-    <?php endif; ?>
-</div>
-<?php endif; ?>
-
-<?php if(in_array("googlemap",$modules)): ?>
-<div id="googlemap">
-    <div class="ui-widget-header header">Google Map</div>
-	<?php if(isset(Yii::app()->user) and !Yii::app()->user->isGuest): ?>
-	<div class="admin-bar" style="margin-right:25px;">
-		<?php if(!isset($place->metadata->googlemap) or $place->metadata->googlemap==""): ?>
-	    <div class="admin-button ui-widget-header active add-googlemap" title="Add a Google Map">
-	        <?=StdLib::load_image("plus_2","20px");?>
-	    </div>
-	    <?php else: ?>
-	    <div class="admin-button ui-widget-header active edit-googlemap" title="Edit Google Map">
-	        <?=StdLib::load_image("pencil_edit","20px");?>
-	    </div>
-	    <?php endif; ?>
-	</div>
-	<?php endif; ?>
-	<?php if(!isset($place->metadata->googlemap) or $place->metadata->googlemap==""): ?>
-        <div style="font-size:18px;margin-left:25px;">There is no google map for this building yet.</div>
-	<?php else: ?>
-	<div style="text-align:center"><?=$place->metadata->googlemap;?></div>
-	<?php endif; ?>
-</div>
-<?php endif; ?>
-
-
-<div id="googlemap-dialog" title="Google Map" style="display:none;">
-	Load your google map in Google Maps then click on "embed".<br/>
-	Copy and paste the code in this box:<br/>
-	<textarea id="googlemap-textarea" name="googlemap" rows="9" cols="49"><?=@$place->metadata->googlemap;?></textarea>
 </div>
 
-<script src="http<?=(isset($_SERVER["HTTPS"]) and $_SERVER["HTTPS"]=="on")?"s":"";?>://compass.colorado.edu/libraries/javascript/jquery/modules/galleria/galleria-1.2.8.js"></script>
-<script src="http<?=(isset($_SERVER["HTTPS"]) and $_SERVER["HTTPS"]=="on")?"s":"";?>://compass.colorado.edu/libraries/javascript/jquery/modules/jnotes/js/jquery-notes_1.0.8_min.js"></script>
-
-<link type="text/css" rel="stylesheet" href="http<?=(isset($_SERVER["HTTPS"]) and $_SERVER["HTTPS"]=="on")?"s":"";?>://compass.colorado.edu/libraries/javascript/jquery/modules/galleria/themes/classic/galleria.classic.css">
-<link type="text/css" rel="stylesheet" href="http<?=(isset($_SERVER["HTTPS"]) and $_SERVER["HTTPS"]=="on")?"s":"";?>://compass.colorado.edu/libraries/javascript/jquery/modules/jnotes/css/style.css">
+<script src="<?php echo WEB_LIBRARY_PATH; ?>jquery/modules/galleria/galleria-1.3.5.js"></script>
+<link type="text/css" rel="stylesheet" href="<?php echo WEB_LIBRARY_PATH; ?>jquery/modules/galleria/themes/classic/galleria.classic.css" />
 
 <script>
-Galleria.loadTheme('http<?=(isset($_SERVER["HTTPS"]) and $_SERVER["HTTPS"]=="on")?"s":"";?>://compass.colorado.edu/libraries/javascript/jquery/modules/galleria/themes/classic/galleria.classic.min.js');
-jQuery(document).ready(function($){
-	
-	init();
-	
-	$("#googlemap-dialog").dialog({
-		"autoOpen": 		false,
-		"width": 			450,
-		"height": 			300,
-		"modal":   			true,
-		"resizable": 		false,
-		"draggable": 		false,
-		"buttons":  		{
-			"Cancel": 		function()
-			{
-				$("#googlemap-textarea").html("");
-				$("#googlemap-dialog").dialog("close");
-			},
-			"Save Google Map": 		function()
-			{
-				$.ajax({
-					"url": 		"<?=Yii::app()->createUrl('_save_google_map');?>",
-					"data": 	"id=<?=$place->placeid;?>&googlemap="+escape($("#googlemap-textarea").val()),
-					"success":  function(data)
-					{
-						$("#googlemap-dialog").dialog("close");
-						window.location.reload();
-					}
-				});
-			}
-		}
-	});
-	
-	$("td.img-holder").hover(
-		function(){
-			$(this).find("img").stop().css("opacity",1);
-		},
-		function(){
-			$(this).find("img").stop().css("opacity",0.5);
-		}
-	);
-	
-	$("td.img-holder").click(function(){
-		if($(this).is(".empty")) return false;
-		var loc = $(this).attr("placeid");
-		window.location = "<?=Yii::app()->createUrl('place');?>?id="+loc;
-		return false;
-	});
-	
-	$("select").change(function(){
-		var val = $(this).val();
-		if(val=="students")
-		{
-			$("div.teachers").hide();
-			$("div.students").show();
-		}
-		if(val=="teachers")
-		{
-			$("div.students").hide();
-			$("div.teachers").show();
-		}
-		if(val=="both")
-		{
-			$("div.students:hidden").show();
-			$("div.teachers:hidden").show();
-		}
-	});
+Galleria.loadTheme('<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/galleria/themes/classic/galleria.classic.min.js');
 
-    $("div.admin-button.active").hover(
-        function(){
-            if($(this).is(".disabled")) return false;
-            $(this).stop().fadeTo('fast',1);
-        },
-        function(){
-            if($(this).is(".disabled")) return false;
-            $(this).stop().fadeTo('fast',0.5);
-        }
-    );
-    
-    $("div.admin-button").tipTip({
-        defaultPosition:    "top",
-        delay:              150,
-    });
-    
-    $(".admin-button.edit-googlemap").click(function(){
-    	$("#googlemap-dialog").dialog("option","title","Edit Google Map for <?=$place->placename;?>");
-		$("#googlemap-dialog").dialog("open");
-		return false;
-    });
-    
-    $(".admin-button.add-googlemap").click(function(){
-    	$("#googlemap-dialog").dialog("option","title","Add Google Map to <?=$place->placename;?>");
-		$("#googlemap-dialog").dialog("open");
-		return false;
-    });
-    
-    $(".admin-button.edit-place").click(function(){
-        window.location = "<?=Yii::app()->createUrl('editplace');?>?id=<?=$place->placeid;?>";
+function scrollToHash()
+{
+    $('html,body').animate({
+        scrollTop: $('[name='+window.location.hash.slice(1)+']').offset().top
+    }, 800);
+}
+$(function() {
+  $('a[href*=#]:not([href=#])').click(function() {
+    if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+      var target = $(this.hash);
+      if(this.hash == "#home") {
+        $('html,body').animate({
+          scrollTop: Math.floor(0)
+        }, 800);
         return false;
-    });
-    
-    $(".admin-button.add-pictures").click(function(){
-        window.location = "<?=Yii::app()->createUrl('pictures');?>?id=<?=$place->placeid;?>";
+      }
+      var fhdr_height = 150;
+      if($(".stuck").length != 0) {
+          fhdr_height = ($("#breadcrumb").length > 0) ? $("#breadcrumb").outerHeight()+10 : 0;
+      }
+      target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+      if (target.length) {
+        $('html,body').animate({
+          scrollTop: Math.floor(target.offset().top - fhdr_height)
+        }, 800);
         return false;
+      }
+    }
+  });
+});
+
+// Display place name if we have scrolled past
+function afterWindowScroll($stuck) {
+    if($stuck == 1) {
+        $("#menu-placename").show();
+    }
+    else {
+        $("#menu-placename").hide();
+    }
+}
+jQuery(document).ready(function($){
+    init();
+    
+    
+    $("a.ri").click(function(){
+       var $val = $(this).text();
+       $("a.ri").removeClass("selected");
+       $(this).addClass("selected");
+       if($val == "All") {
+           $("ul#ri-list li:hidden").each(function(){
+              $(this).stop().show('fade'); 
+           });
+       } 
+       else if($val=="Students") {
+           $("ul#ri-list li.students:hidden").stop().show('fade');
+           $("ul#ri-list li.none:visible").stop().hide('fade');
+           $("ul#ri-list li.teachers:visible").stop().hide('fade');
+       }
+       else if($val=="Teachers") {
+           $("ul#ri-list li.teachers:hidden").stop().show('fade');
+           $("ul#ri-list li.none:visible").stop().hide('fade');
+           $("ul#ri-list li.students:visible").stop().hide('fade');
+       }
     });
     
-    $(".admin-button.add-classroom").click(function(){
-        window.location = "<?=Yii::app()->createUrl('addplace');?>?parentid=<?=$place->placeid;?>&placetype=classroom";
-        return false;
-    });
     
-    $(".admin-button.add-lab").click(function(){
-        window.location = "<?=Yii::app()->createUrl('addplace');?>?parentid=<?=$place->placeid;?>&placetype=lab";
-        return false;
-    });
-    
-    $(".admin-button.add-infotype").click(function(){
-        window.open("<?=Yii::app()->createUrl('newinfotype');?>?id=<?=$place->placeid;?>");
-        return false;
-    });
-    
-	$(".anchor-link").click(function(event){       
-        event.preventDefault();
-        $('html,body').animate({scrollTop:$(this.hash).offset().top}, 500);
-		return false;
-	});
+   $("ul.rig li").hover(
+       function(){
+           $(this).fadeTo("fast",1);
+       },
+       function(){
+           $(this).fadeTo("fast",0.8);
+       }
+   );
 });
 function init()
 {
-	Galleria.run("#galleria", {
-		lightbox: true,
-		dummy: "<?php echo WEB_IMAGE_LIBRARY.'no_image_available.png'; ?>",
+    Galleria.run("#galleria", {
+        lightbox: true,
+        dummy: "<?php echo WEB_IMAGE_LIBRARY.'images/no_image_available.png'; ?>",
         extend: function() {
             var gallery = this; // "this" is the gallery instance
             console.log(gallery); // call the play method
             $('#download-image').click(function() {
             });
         }
-	});
+    });
 }
 </script>
-
-
+<?php
+endif; # Check if place is loaded
+?>

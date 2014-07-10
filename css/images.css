@@ -1,0 +1,75 @@
+ul.rig {
+	list-style: none;
+	font-size: 1em;
+	display:block;
+	margin-left: -2.2%;
+}
+
+ul.rig.columns-4 li {
+	width: 22%;
+}
+ul.rig li {
+	display: inline-block;
+	padding: 10px;
+	margin: 0 0 2.5% 2.5%;
+	background: #fff;
+	background:rgba(255,255,255,0.8);
+	border:1px solid #ddd;
+	font-size: 1em;
+	vertical-align: top;
+	box-shadow: 0 0 5px #ddd;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	padding-bottom:15px;
+	opacity:0.8;
+}
+ul.rig li a {
+	text-decoration:none;
+	color:inherit;
+}
+ul.rig li div.image-container {
+	max-width: 100%;
+	height:150px;
+	margin: 0 0 10px;
+}
+
+ul.rig li img {
+	max-width: 100%;
+	height:100%;
+	margin: 0 0 10px;
+}
+
+ul.rig li h3 {
+	font-size:1em;
+	font-weight:bold;
+	font-style:italic;
+	color:#555;
+	margin-bottom:0;
+}
+
+ul.rig li p {
+	font-size: 0.9em;
+	line-height:1.5em;
+	color: #999;
+}
+
+ul.rig li div.placetype {
+	font-size: 0.9em;
+	color: #999;
+}
+
+ul#ri-list {
+	text-align: center;
+}
+ul#ri-list li {
+	width: 24%;
+	min-height:75px;
+}
+ul#ri-list li div.label {
+	padding:5px;
+	white-space:nowrap;
+}
+ul#ri-list li div.value {
+	padding:5px;
+}
