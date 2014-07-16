@@ -3,6 +3,8 @@
 class PlacesObj extends FactoryObj
 {
   
+  protected $iterator = 0;
+  
   public function __construct($placeid=null)
   {
     parent::__construct("placeid","places",$placeid);
@@ -145,6 +147,16 @@ class PlacesObj extends FactoryObj
       $this->images[] = new PictureObj($row["pictureid"]);
       
     return $this->images;
+  }
+  
+  public function load_image_location($iterator=null) {
+      if(is_null($iterator)) {
+          $iterator = $this->iterator;
+      }
+      if(isset($this->images[$iterator]) and $this->images[$iterator]->loaded) {
+          return $this->images[$iterator]->path;
+      }
+      return "";
   }
   
   public function _metadata($index,$type)

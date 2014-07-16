@@ -94,7 +94,7 @@ class PictureObj extends FactoryObj
   public function crop($size,$target)
   {
   	$imager = new Imager(getcwd().$this->path);
-	$imager->crop($size,"auto",$target);
+	$imager->crop($target,$size,"auto");
   }
   
   public function get_thumb()
@@ -132,10 +132,10 @@ class PictureObj extends FactoryObj
 	return $thumbpath;
   }
   
-  public function make_thumb()
+  public function make_thumb($OVERWRITE=false)
   {
 	$thumbpath = $this->get_thumb_path();
-	if(!is_file($thumbpath)){
+	if(!is_file($thumbpath) or $OVERWRITE){
 		$this->crop("500",$thumbpath);
 	}
   }

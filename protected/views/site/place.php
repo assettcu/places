@@ -108,7 +108,7 @@ foreach($childplaces as $childplace) {
             <div id="galleria">
                 <?php 
                 if($place->has_pictures()) {
-                    $place->render_pictures(true);
+                    $place->render_pictures();
                 } 
                 else {
                     $place->render_no_image();
@@ -352,9 +352,6 @@ function init()
         dummy: "<?php echo WEB_IMAGE_LIBRARY.'images/no_image_available.png'; ?>",
         extend: function() {
             var gallery = this; // "this" is the gallery instance
-            console.log(gallery); // call the play method
-            $('#download-image').click(function() {
-            });
         }
     });
 }

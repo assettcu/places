@@ -170,7 +170,6 @@ class SiteController extends Controller
     /**
      * The actions below are for AJAX calls only
      */
-     
      public function action_load_places_by_placetype()
      {
     	$this->login_only();

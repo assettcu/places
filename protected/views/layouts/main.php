@@ -63,17 +63,13 @@ $theme = "cupertino";
 </head>
 
 <body>
-<div class="container" id="page">
 
+<div class="container" id="page">
 	<div id="header">
 	    <div class="logo">
-		  <a href="<?=Yii::app()->createUrl('index');?>">
-    			<?php echo StdLib::load_image("house","44px"); ?> 
-    			<div class="logo-text">
-    			    Places
-                    <div class='small-text'>Around the Campus!</div>
-    			</div>
-    		</a>
+		    <a href="<?=Yii::app()->createUrl('index');?>">
+                <?php echo StdLib::load_image("university_of_colorado_places_white"); ?>
+            </a>
 		</div>
 		<?php if(Yii::app()->controller->action->id == "place"): ?>
 		<div class="search sticky" sticky="150">
@@ -82,7 +78,7 @@ $theme = "cupertino";
 		<?php endif; ?>
 		    <form method="get" action="search" id="searchform">
     		    <input type="text" id="searchbar" name="q" value="<?php echo @$_REQUEST["q"]; ?>" />
-    		    <a href="#" id="search" class="button grey">Search</a>
+    		    <a href="#" onclick="javascript:document.forms[0].submit();" id="search" class="button grey">Search</a>
 		    </form>
 		</div>
 	</div>
