@@ -23,6 +23,7 @@ ul.rig li {
 	-webkit-box-sizing: border-box;
 	padding-bottom:15px;
 	opacity:0.8;
+	cursor:pointer;
 }
 ul.rig li a {
 	text-decoration:none;
@@ -40,7 +41,7 @@ ul.rig li img {
 	margin: 0 0 10px;
 }
 
-ul.rig li h3 {
+ul.rig li div.title {
 	font-size:1em;
 	font-weight:bold;
 	font-style:italic;
@@ -54,9 +55,15 @@ ul.rig li p {
 	color: #999;
 }
 
-ul.rig li div.placetype {
+ul.rig li div.placetype-classroom {
 	font-size: 0.9em;
-	color: #999;
+	color: #059;
+	font-style:italic;
+}
+ul.rig li div.placetype-lab {
+	font-size: 0.9em;
+	color: #095;
+	font-style:italic;
 }
 
 ul#ri-list {
