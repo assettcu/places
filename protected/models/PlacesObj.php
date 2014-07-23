@@ -3,6 +3,8 @@
 class PlacesObj extends FactoryObj
 {
   
+  protected $iterator = 0;
+  
   public function __construct($placeid=null)
   {
     parent::__construct("placeid","places",$placeid);
@@ -147,6 +149,16 @@ class PlacesObj extends FactoryObj
     return $this->images;
   }
   
+  public function load_image_location($iterator=null) {
+      if(is_null($iterator)) {
+          $iterator = $this->iterator;
+      }
+      if(isset($this->images[$iterator]) and $this->images[$iterator]->loaded) {
+          return $this->images[$iterator]->path;
+      }
+      return "";
+  }
+  
   public function _metadata($index,$type)
   {
     if($type!="label" and $type!="value") return "";
@@ -250,6 +262,7 @@ class PlacesObj extends FactoryObj
     $path = LOCAL_IMAGE_LIBRARY."no_image_available.png";
     $imager = new Imager($path);
     $imager->resize($width,$height);
+    $imager->add_attribute("alt", "No Image Available");
     return print $imager->render();
   }
   
@@ -257,7 +270,9 @@ class PlacesObj extends FactoryObj
   {
   	if(!isset($this->pictures)) $this->load_pictures();
 	if(!empty($this->pictures)) {
+		$count = 0;
 		foreach($this->pictures as $picture) {
+		    $count++;
 			if($thumb) {
 				$path = $this->get_thumb_path($picture);
 			}
@@ -265,6 +280,7 @@ class PlacesObj extends FactoryObj
 				$path = getcwd().$picture->path;
 			}
 			$imager = new Imager($path);
+            $imager->add_attribute("alt", $this->placename." ".$count);
 			$imager->add_attribute("class","slideshow-img");
 			$imager->add_attribute("data-big",Yii::app()->baseUrl.$picture->path);
 			$imager->add_attribute("data-title",$picture->caption);

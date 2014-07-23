@@ -2,8 +2,10 @@
 $places = search($_REQUEST["q"]);
 ?>
 
+<h1>Search for Places</h1>
+
 <div class="search-query">
-	You searched for <span style="color:#09f;"><?=$_REQUEST["q"];?></span>. Found <span style="color:#f90;"><?=count($places);?></span> results.
+	You searched for &quot;<span class="text-blue" id="query"><?=$_REQUEST["q"];?></span>&quot;. Found <span class="text-orange" id="count"><?=count($places);?></span> results.
 </div>
 
 <ul class="rig columns-4">
@@ -16,14 +18,14 @@ $places = search($_REQUEST["q"]);
     <li>
         <a href="<?php echo Yii::app()->createUrl('place'); ?>?id=<?php echo $place->placename; ?><?php if(isset($place->yearterm)) { ?>&yt=<?php echo $place->yearterm; } ?>&ref=<?php echo $_REQUEST['q']; ?>">
             <div class="image-container">
-                <img src="<?php echo $thumb; ?>" width="100%" height="100%" />
+                <img src="<?php echo $thumb; ?>" width="100%" height="100%" alt="" />
             </div>
-            <h3><?php echo $place->placename; ?></h3>
+            <div class="title"><?php echo $place->placename; ?></div>
             <?php if(isset($place->description) and !empty($place->description)): ?>
             <p><?php echo $place->description; ?></p>
             <?php endif; ?>
-            <div class="placetype"><?php echo $place->placetype->singular; ?></div>
-        </a>
+            <div class="placetype-<?php echo $place->placetype->machinecode; ?>"><?php echo $place->placetype->singular; ?></div>
+         </a>
     </li>
     <?php endforeach; ?>
 </ul>

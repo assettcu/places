@@ -4,10 +4,11 @@ $place = new PlacesObj($id);
 
 if(!$place->loaded) :
 ?>
+<h1 class="hide">Place Not Found</h1>
 <div style="width:500px;margin-left:30%;margin-top:150px;">
-    <?php echo StdLib::load_image("nolocation","128px"); ?>
+    <img src="<?php echo StdLib::load_image_source("nolocation"); ?>" width="128px" alt="Place not found"/>
     <div style="width:330px;display:inline-block;vertical-align: top;padding-left:15px;">
-        <h1>Could not find place</h1>
+        <div class="big">Could not find place</div>
         <p>This place has not been added yet. <a href="<?php echo Yii::app()->baseUrl; ?>">Go Back</a></p>
     </div>
 </div>
@@ -15,7 +16,7 @@ if(!$place->loaded) :
 else:
 
 # Session will keep which year/term (yt) user is looking at across the application
-$yt = "20144";
+$yt = "20147";
 if(!isset($_SESSION)) {
     session_start();
 }
@@ -42,9 +43,13 @@ if($place->placetype->machinecode == "building") {
 }
 # Load classes for a classroom
 else if($place->placetype->machinecode == "classroom") {
+    $parent = $place->get_parent();
+    $parent->load_metadata();
+    $building_code = $parent->metadata->data["building_code"]["value"];
     $classes = StdLib::external_call(
         "http://assettdev.colorado.edu/ascore/api/classroomclasses",
         array(
+            "building"  => $building_code,
             "classroom" => $place->placename,
             "term"      => $yt, # Semester/Year to lookup
         )
@@ -55,6 +60,10 @@ else {
     $classes = array();
 }
 
+$yearterms = StdLib::external_call(
+    "http://assettdev.colorado.edu/ascore/api/uniqueyearterms"
+);
+
 # Load children places
 $childplaces = load_child_places($place->placeid);
 
@@ -64,7 +73,7 @@ foreach($childplaces as $childplace) {
     $childplace_names[] = $childplace->placename;
 }
 ?>
-
+<h1 class="hide"><?php echo $place->placename; ?></h1>
 <div class="entry">
     
     <ul id="breadcrumb" class="sticky" sticky="150">
@@ -91,7 +100,7 @@ foreach($childplaces as $childplace) {
     </ul>
     
     <h2><?php echo $place->placename; ?></h2>
-    <h3 class="nav sticky" sticky="150">
+    <div class="nav sticky" sticky="150">
         <ul>
             <li><div id="menu-placename"><?php echo $place->placename; ?></div></li>
             <li><a href="#home" onclick="javascript:return false;">Images <span class="icon icon-image2"> </span></a></li>
@@ -102,13 +111,14 @@ foreach($childplaces as $childplace) {
             <?php endif; ?>
             <li><a href="#buildingclasses" onclick="javascript:return false;">Classes <span class="icon icon-list"> </span></a></li>
         </ul>
-    </h3>
+    </div>
+    <a name="home"></a>
     <div class="content">
         <div class="images">
             <div id="galleria">
                 <?php 
                 if($place->has_pictures()) {
-                    $place->render_pictures(true);
+                    $place->render_pictures();
                 } 
                 else {
                     $place->render_no_image();
@@ -119,7 +129,9 @@ foreach($childplaces as $childplace) {
         </div>
         
         <br class="clear" />
-        <h3 name="relevant-info"><?php echo $place->placetype->singular; ?> Information</h3>
+        
+        <a name="relevant-info"></a>
+        <h3 name="relevant-info-header"><?php echo $place->placetype->singular; ?> Information</h3>
         <div class="meta">
             <div class="metachoice">
                 <a href="#" class="ri selected" onclick="javascript:return false;">All</a> |
@@ -141,7 +153,8 @@ foreach($childplaces as $childplace) {
         <br class="clear" />
         <br class="clear" />
         <?php if($place->placetype->machinecode == "building"): ?>
-        <h3 name="roomuniquename">Rooms in this <?php echo $place->placetype->singular; ?></h2>
+        <a name="roomuniquename"></a>
+        <h3 name="roomuniquename-header">Rooms in this <?php echo $place->placetype->singular; ?></h2>
         
         <ul class="rig columns-4">
         <?php if(!empty($childplaces)):  ?>
@@ -159,20 +172,21 @@ foreach($childplaces as $childplace) {
             <li>
                 <a href="<?php echo Yii::app()->createUrl('place'); ?>?id=<?php echo $childplace->placename; ?>">
                     <div class="image-container">
-                        <img src="<?php echo $thumb; ?>" width="100%" height="100%" />
+                        <img src="<?php echo $thumb; ?>" width="100%" height="100%" alt="<?php echo $childplace->placename; ?>" />
                     </div>
-                    <h3><?php echo $childplace->placename; ?></h3>
-                    <div class="placetype"><?php echo $childplace->placetype->singular; ?></div>
+                    <div class="title"><?php echo $childplace->placename; ?></div>
+                    <div class="placetype-<?php echo $childplace->placetype->machinecode; ?>"><?php echo $childplace->placetype->singular; ?></div>
                     <?php if(isset($childplace->description) and !empty($childplace->description)): ?>
                     <p><?php echo $childplace->description; ?></p>
                     <?php endif; ?>
-                </a>
+                 </a>
             </li>
             <?php endforeach; ?>
         <?php endif; ?>
         </ul>
 
-        <h3 name="googlemap">Google Map</h2>
+        <a name="googlemap"></a>
+        <h3 name="googlemap-header">Google Map</h2>
         
         <div class="calign">
             <?php echo $place->metadata->data["googlemap"]["value"]; ?>
@@ -182,12 +196,15 @@ foreach($childplaces as $childplace) {
         <?php endif; ?>
         
         <a name="yt"></a>
-        <h3 name="buildingclasses">Classes in this <?php echo $place->placetype->singular; ?></h2>
+        <a name="buildingclasses"></a>
+        <h3 name="buildingclasses-header">Classes in this <?php echo $place->placetype->singular; ?></h2>
         <div class="right">
             Classes for 
+            <label for="yt-select" class="hide">Select Year/Term</label>
             <select name="yt" id="yt-select">
-                <option value="20144" <?php if((isset($_REQUEST["yt"]) and $_REQUEST["yt"] == "20144") or (!isset($_REQUEST["yt"]) and isset($_SESSION["yt"]) and $_SESSION["yt"] == "20144")) : ?>selected='selected'<?php endif; ?>>Summer 2014</option>
-                <option value="20137" <?php if((isset($_REQUEST["yt"]) and $_REQUEST["yt"] == "20137") or (!isset($_REQUEST["yt"]) and isset($_SESSION["yt"]) and $_SESSION["yt"] == "20137")) : ?>selected='selected'<?php endif; ?>>Fall 2013</option>
+                <?php foreach($yearterms as $yearterm): ?>
+                <option value="<?php echo $yearterm["value"]; ?>" <?php if((isset($_REQUEST["yt"]) and $_REQUEST["yt"] == $yearterm["value"]) or (!isset($_REQUEST["yt"]) and isset($_SESSION["yt"]) and $_SESSION["yt"] == $yearterm["value"])) : ?>selected='selected'<?php endif; ?>><?php echo $yearterm["display"]; ?></option>
+                <?php endforeach; ?>
             </select>
             <script>
             jQuery(document).ready(function($){
@@ -200,6 +217,7 @@ foreach($childplaces as $childplace) {
         <div class="hint" style="font-size:0.8em;margin:-10px 0px 10px 0px;">Note: Arts &amp; Sciences classes only.</div>
         
         <table class="fancy-table classes-table">
+            <caption class="hide">Table of Arts &amp; Science Classes in this <?php echo $place->placetype->singular; ?>.</caption>
             <thead>
                 <tr>
                     <th width="82px">Course</th>
@@ -273,7 +291,7 @@ Galleria.loadTheme('<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/galleria/them
 function scrollToHash()
 {
     $('html,body').animate({
-        scrollTop: $('[name='+window.location.hash.slice(1)+']').offset().top
+        scrollTop: $('[name='+window.location.hash.slice(1)+'-header]').offset().top
     }, 800);
 }
 $(function() {
@@ -290,7 +308,7 @@ $(function() {
       if($(".stuck").length != 0) {
           fhdr_height = ($("#breadcrumb").length > 0) ? $("#breadcrumb").outerHeight()+10 : 0;
       }
-      target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+      target = target.length ? target : $('[name=' + this.hash.slice(1) +'-header]');
       if (target.length) {
         $('html,body').animate({
           scrollTop: Math.floor(target.offset().top - fhdr_height)
@@ -352,10 +370,13 @@ function init()
         dummy: "<?php echo WEB_IMAGE_LIBRARY.'images/no_image_available.png'; ?>",
         extend: function() {
             var gallery = this; // "this" is the gallery instance
-            console.log(gallery); // call the play method
-            $('#download-image').click(function() {
-            });
         }
+    });
+    
+    Galleria.ready(function(){
+        this.bind('image', function(e) {
+            e.imageTarget.alt = e.galleriaData.description;
+        }); 
     });
 }
 </script>

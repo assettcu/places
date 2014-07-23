@@ -1,6 +1,6 @@
 <?php
 // Theme name from Jquery UI themes
-$theme = "cupertino";
+$theme = "base";
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -63,17 +63,13 @@ $theme = "cupertino";
 </head>
 
 <body>
-<div class="container" id="page">
 
+<div class="container" id="page">
 	<div id="header">
 	    <div class="logo">
-		  <a href="<?=Yii::app()->createUrl('index');?>">
-    			<?php echo StdLib::load_image("house","44px"); ?> 
-    			<div class="logo-text">
-    			    Places
-                    <div class='small-text'>Around the Campus!</div>
-    			</div>
-    		</a>
+		    <a href="<?=Yii::app()->createUrl('index');?>">
+                <img src="<?php echo StdLib::load_image_source("university_of_colorado_places_white"); ?>" alt="University of Colorado - Places" />
+            </a>
 		</div>
 		<?php if(Yii::app()->controller->action->id == "place"): ?>
 		<div class="search sticky" sticky="150">
@@ -81,8 +77,9 @@ $theme = "cupertino";
         <div class="search">
 		<?php endif; ?>
 		    <form method="get" action="search" id="searchform">
+		        <label for="searchbar" class="hide">Search Places</label>
     		    <input type="text" id="searchbar" name="q" value="<?php echo @$_REQUEST["q"]; ?>" />
-    		    <a href="#" id="search" class="button grey">Search</a>
+    		    <a href="#" onclick="javascript:document.forms[0].submit();" id="search" class="button grey">Search</a>
 		    </form>
 		</div>
 	</div>
@@ -96,7 +93,7 @@ $theme = "cupertino";
 
     <div id="footer">
         <div class="left-footer">Developed by <a href="http//assett.colorado.edu">ASSETT</a>.</div>
-        <div class="right-footer">Copyright &copy; <?php echo date("Y"); ?> <span class="footer-appicon-divide">|</span> <div class="footer-appicon">App Icons by <a href="http://icons8.com">Icons8</a>.</div></div>
+        <div class="right-footer">Copyright &copy; <?php echo date("Y"); ?></div>
         <div class="mid-footer">All Rights Reserved <span class="footer-divide">|</span> <div class="footer-culink"><a href="http//colorado.edu">University of Colorado Boulder</a></div></div>
     </div><!-- footer -->
 

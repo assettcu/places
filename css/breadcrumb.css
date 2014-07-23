@@ -1,12 +1,5 @@
 
 
-h1 {
-  font-weight: 100;
-  font-size: 32px;
-  padding: 40px;
-  color: #fff;
-}
-
 #breadcrumb {
   list-style: none;
   display: inline-block;
@@ -28,7 +21,7 @@ h1 {
 #breadcrumb li a {
   color: #FFF;
   display: block;
-  background: #3498db;
+  background: #1f76b1;
   text-decoration: none;
   position: relative;
   height: 40px;
@@ -38,14 +31,14 @@ h1 {
   margin-right: 23px;
 }
 #breadcrumb li:nth-child(even) a {
-  background-color: #2980b9;
+  background-color: #236d9e;
 }
 #breadcrumb li:nth-child(even) a:before {
-  border-color: #2980b9;
+  border-color: #236d9e;
   border-left-color: transparent;
 }
 #breadcrumb li:nth-child(even) a:after {
-  border-left-color: #2980b9;
+  border-left-color: #236d9e;
 }
 #breadcrumb li:first-child a {
   padding-left: 15px;
@@ -69,7 +62,7 @@ h1 {
   content: "";
   position: absolute;
   top: 0;
-  border: 0 solid #3498db;
+  border: 0 solid #1f76b1;
   border-width: 20px 10px;
   width: 0;
   height: 0;
@@ -81,7 +74,7 @@ h1 {
 #breadcrumb li a:after {
   left: 100%;
   border-color: transparent;
-  border-left-color: #3498db;
+  border-left-color: #1f76b1;
 }
 #breadcrumb li a:hover {
   background-color: #1abc9c;
