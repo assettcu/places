@@ -60,6 +60,10 @@ else {
     $classes = array();
 }
 
+$yearterms = StdLib::external_call(
+    "http://assettdev.colorado.edu/ascore/api/uniqueyearterms"
+);
+
 # Load children places
 $childplaces = load_child_places($place->placeid);
 
@@ -171,7 +175,7 @@ foreach($childplaces as $childplace) {
                         <img src="<?php echo $thumb; ?>" width="100%" height="100%" alt="<?php echo $childplace->placename; ?>" />
                     </div>
                     <div class="title"><?php echo $childplace->placename; ?></div>
-                    <div class="placetype"><?php echo $childplace->placetype->singular; ?></div>
+                    <div class="placetype-<?php echo $childplace->placetype->machinecode; ?>"><?php echo $childplace->placetype->singular; ?></div>
                     <?php if(isset($childplace->description) and !empty($childplace->description)): ?>
                     <p><?php echo $childplace->description; ?></p>
                     <?php endif; ?>
@@ -198,9 +202,9 @@ foreach($childplaces as $childplace) {
             Classes for 
             <label for="yt-select" class="hide">Select Year/Term</label>
             <select name="yt" id="yt-select">
-                <option value="20147" <?php if((isset($_REQUEST["yt"]) and $_REQUEST["yt"] == "20147") or (!isset($_REQUEST["yt"]) and isset($_SESSION["yt"]) and $_SESSION["yt"] == "20147")) : ?>selected='selected'<?php endif; ?>>Fall 2014</option>
-                <option value="20144" <?php if((isset($_REQUEST["yt"]) and $_REQUEST["yt"] == "20144") or (!isset($_REQUEST["yt"]) and isset($_SESSION["yt"]) and $_SESSION["yt"] == "20144")) : ?>selected='selected'<?php endif; ?>>Summer 2014</option>
-                <option value="20137" <?php if((isset($_REQUEST["yt"]) and $_REQUEST["yt"] == "20137") or (!isset($_REQUEST["yt"]) and isset($_SESSION["yt"]) and $_SESSION["yt"] == "20137")) : ?>selected='selected'<?php endif; ?>>Fall 2013</option>
+                <?php foreach($yearterms as $yearterm): ?>
+                <option value="<?php echo $yearterm["value"]; ?>" <?php if((isset($_REQUEST["yt"]) and $_REQUEST["yt"] == $yearterm["value"]) or (!isset($_REQUEST["yt"]) and isset($_SESSION["yt"]) and $_SESSION["yt"] == $yearterm["value"])) : ?>selected='selected'<?php endif; ?>><?php echo $yearterm["display"]; ?></option>
+                <?php endforeach; ?>
             </select>
             <script>
             jQuery(document).ready(function($){

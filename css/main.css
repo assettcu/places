@@ -200,7 +200,7 @@ body
 .entry div.nav ul li a {
     display:block;
     text-decoration:none;
-    color:#888;
+    color:#514f4f;
     width:auto!important;
     padding:.25em .5em .25em 0;
     border-right:2px solid #888;
@@ -255,17 +255,17 @@ div.metachoice {
     padding-bottom:1em;
 }
 div.metachoice a {
-    color:#999;
+    color:#4c4c4c;
     text-decoration:none;
 }
 div.metachoice a:hover {
-    color:#555;
+    color:#4c4c4c;
 }
 div.metachoice a.selected {
-    color:#09f;
+    color:#0078c9;
 }
 div.metachoice a.selected:hover {
-    color:#555;
+    color:#4c4c4c;
 }
 #galleria {
     width: 100%; height: 500px; background-color: #fff;

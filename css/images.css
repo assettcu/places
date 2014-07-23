@@ -55,6 +55,12 @@ ul.rig li p {
 	color: #999;
 }
 
+ul.rig li div.placetype-building {
+	font-size: 0.9em;
+	color: #950;
+	font-style:italic;
+}
+
 ul.rig li div.placetype-classroom {
 	font-size: 0.9em;
 	color: #059;
@@ -62,7 +68,7 @@ ul.rig li div.placetype-classroom {
 }
 ul.rig li div.placetype-lab {
 	font-size: 0.9em;
-	color: #095;
+	color: #006f3d;
 	font-style:italic;
 }
 
