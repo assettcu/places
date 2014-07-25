@@ -151,20 +151,22 @@ class SiteController extends Controller
 	{
 		$this->render('place');
 	}
-
-	public function actionClassroom()
-	{
-		$this->render('classroom');
-	}
-	
-    public function actionPictures()
-    {
-        $this->render('pictures');
-    }
     
 	public function actionSearch()
 	{
-		$this->render('search',$_REQUEST);
+	    # Query for the places from the search (models/Functions)
+        $places = search($_REQUEST["q"]);
+        
+        # Save the search to the DB
+        $search             = new SearchObj();
+        $search->search     = $_REQUEST["q"];
+        $search->ipaddress  = $_SERVER["REMOTE_ADDR"];
+        // $search->results    = json_encode($places);
+        $search->numresults = count($places);
+        
+        $search->save();
+        
+		$this->render('search',array("places"=>$places));
 	}
 	
     /**
