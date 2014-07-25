@@ -80,6 +80,7 @@ $theme = "base";
 		        <label for="searchbar" class="hide">Search Places</label>
     		    <input type="text" id="searchbar" name="q" value="<?php echo @$_REQUEST["q"]; ?>" />
     		    <a href="#" onclick="javascript:document.forms[0].submit();" id="search" class="button grey">Search</a>
+    		    <div id="search-hint" style="text-align:left;"><span class="icon icon-info"> </span>Search for buildings, classrooms, or classes. </div>
 		    </form>
 		</div>
 	</div>

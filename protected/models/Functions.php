@@ -118,9 +118,13 @@ function search($search)
     
     if(empty($places)) {
         $places = search_classes($search);
+        $search_type = "classes";
+    }
+    else {
+        $search_type = "placename";
     }
     
-    return $places;
+    return array("search_type"=>$search_type,"places"=>$places);
 }
 
 function search_classes($search)
@@ -149,6 +153,7 @@ function search_classes($search)
        }
        $place = new PlacesObj($result["placeid"]);
        $place->yearterm = $loc["yearterm"];
+       $place->class = $loc["title"];
        $places[] = $place;
     }
     
@@ -176,3 +181,12 @@ function load_child_places($parentid)
     return $places;
 }
 
+function yearterm_code_to_display($code) {
+    $term = substr($code,-1,1);
+    switch($term) {
+        case "1": return "Spring ".substr($code,0,4);
+        case "4": return "Summer ".substr($code,0,4);
+        case "7": return "Fall ".substr($code,0,4);
+        default: return substr($code,0,4);
+    }
+}

@@ -64,7 +64,7 @@ body
 #header div.search {
 	float:right;
 	vertical-align:middle;
-	margin-top:0.75em; /* 12px / 16px = 1*/
+	margin-top:0.45em; /* 12px / 16px = 1*/
 	margin-right:25px;
 }
 #header div.search input#searchbar {
@@ -311,6 +311,9 @@ div.search.stuck {
 .text-orange {
 	color:#b20000;
 }
+.text-violet {
+	color:#800080;
+}
 
 div.big {
 	font-size: 2em;
@@ -318,4 +321,12 @@ div.big {
 	margin-bottom: 0.5em;
 	font-weight:normal;
 	color:#111;
+}
+.italic {
+	font-style:italic;
+}
+div#search-hint {
+	padding:3px;
+	padding-left:20px;
+	font-size:.9em;
 }
