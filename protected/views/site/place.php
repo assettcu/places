@@ -77,7 +77,7 @@ foreach($childplaces as $childplace) {
 <div class="entry">
     
     <ul id="breadcrumb" class="sticky" sticky="150">
-      <li><a href="<?php echo Yii::app()->baseUrl; ?>"><span class="icon icon-home"> </span> Home</a></li>
+      <li><a href="<?php echo Yii::app()->createUrl(Yii::app()->baseUrl); ?>"><span class="icon icon-home"> </span> Home</a></li>
       <?php if($place->placetype->machinecode == "classroom"): ?>
       <li>
           <a href="<?php echo Yii::app()->createUrl('place'); ?>?id=<?php echo $place->get_parent()->placename; ?>">
