@@ -67,8 +67,7 @@ class FactoryObj
 		}
 
 		// Loop through each field and load it into the contact object
-		foreach($result as $index=>$val)
-		{
+		foreach($result as $index=>$val) {
 			$this->$index = $val;
 		}
 		$this->loaded = true;
@@ -83,15 +82,16 @@ class FactoryObj
 		$vars = get_object_vars($this);
 
 		// Remove the variables which are not database vars
-		foreach($vars as $var=>$val)
-			if(!$this->is_column($var)) unset($vars[$var]);
+		foreach($vars as $var=>$val) {
+            if(!$this->is_column($var)) {
+                unset($vars[$var]);
+            }
+		}
 
-		if($this->run_check())
-		{
+		if($this->run_check()) {
 			$transaction = Yii::app()->db->beginTransaction();
 			// Course id was set so we need to update the database
-			if($this->is_valid_id() and $this->exists())
-			{
+			if($this->is_valid_id() and $this->exists()) {
 				$set_fields = "";
 
 				foreach($vars as $var=>$val)
@@ -107,13 +107,11 @@ class FactoryObj
 				$command->bindParam(":".$this->uniqueid,$this->uniqueid);
 
 			}
-			else
-			{
+			else {
 				$field_names = "";
 				$field_values = "";
 
-				foreach($vars as $var=>$val)
-				{
+				foreach($vars as $var=>$val) {
 					if($var==$this->uniqueid and (is_null($val) or empty($val))) continue;
 					$field_names .= "{$var},";
 					$field_values .= ":{$var},";
@@ -128,27 +126,30 @@ class FactoryObj
 				";
 				$command = Yii::app()->db->createCommand($query);
 			}
-			// Loop through and bind the parameters
-			foreach($vars as $var=>$val)
-			{
+			# Loop through and bind the parameters
+			foreach($vars as $var=>$val) {
 				if($var==$this->uniqueid and (is_null($val) or empty($val))) continue;
 				$command->bindParam(":{$var}",$this->$var);
 			}
-			try
-			{
+			
+            
+			try {
 				$command->execute();
 				if(!$this->is_valid_id()) $this->{$this->uniqueid} = Yii::app()->db->getLastInsertId();
 				$transaction->commit();
 			}
-			catch(Exception $e)
-			{
+			catch(Exception $e) {
 				$transaction->rollBack();
 				$this->set_error($e);
 				return false;
 			}
+            
 			$this->post_save();
 			return true;
-		} else return false;
+		} 
+		else {
+		    return false;
+        }
 	}
 
 	public function run_check()
@@ -158,15 +159,11 @@ class FactoryObj
 
 	public function exists()
 	{
-		$conn = Yii::app()->db;
-		$query = "
-			SELECT		COUNT(*) as existing
-			FROM		{{".$this->table."}}
-			WHERE		".$this->uniqueid." = :".$this->uniqueid.";
-		";
-		$command = $conn->createCommand($query);
-		$command->bindParam(":".$this->uniqueid,$this->{$this->uniqueid});
-		$result = $command->queryScalar();
+		$result = Yii::app()->db->createCommand()
+            ->select("COUNT(*)")
+            ->from($this->table)
+            ->where($this->uniqueid." = :".$this->uniqueid, array(":".$this->uniqueid => $this->uniqueid))
+            ->queryScalar();
 		return ((integer)$result!=0);
 	}
 

@@ -1,11 +1,7 @@
-<?php
-$places = search($_REQUEST["q"]);
-?>
-
 <h1>Search for Places</h1>
 
 <div class="search-query">
-	You searched for &quot;<span class="text-blue" id="query"><?=$_REQUEST["q"];?></span>&quot;. Found <span class="text-orange" id="count"><?=count($places);?></span> results.
+	You searched for &quot;<span class="text-blue" id="query"><?=$_REQUEST["q"];?></span>&quot;. Found <span class="text-orange" id="count"><input type="hidden" name="count-field" id="count-field" value="<?php echo count($places); ?>" /><?php echo count($places);?></span> results.
 </div>
 
 <ul class="rig columns-4">

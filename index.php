@@ -4,6 +4,7 @@ defined('YII_DEBUG') or define('YII_DEBUG',true);
 if(YII_DEBUG) {
     ini_set("display_errors",1);
     error_reporting(E_ALL);
+    $global_counter = 0;
 }
 
 // change the following paths if necessary
