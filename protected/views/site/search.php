@@ -21,10 +21,14 @@
             <p><?php echo $place->description; ?></p>
             <?php endif; ?>
             <div class="placetype-<?php echo $place->placetype->machinecode; ?>"><?php echo $place->placetype->singular; ?></div>
-            <?php 
+            <?php
             if($search_type == "classes") {
-                preg_match("/".$_REQUEST["q"]."/i",$place->class,$matches);
-                echo preg_replace("/".$_REQUEST["q"]."/i","<span class='text-violet'>".$matches[0]."</span>",$place->class);
+                if(preg_match("/".$_REQUEST["q"]."/i",$place->class,$matches)) {
+                    echo preg_replace("/".$_REQUEST["q"]."/i","<span class='text-violet'>".@$matches[0]."</span>",$place->class);
+                }
+                else {
+                    echo $place->class;
+                }
                 echo " (".yearterm_code_to_display($place->yearterm).")";
             }
             ?>

@@ -50,6 +50,8 @@ $theme = "base";
 	
 	<link rel="stylesheet" href="//compass.colorado.edu/libraries/javascript/jquery/modules/tiptip/tipTip.css" type="text/css" />
 	<script src="//compass.colorado.edu/libraries/javascript/jquery/modules/tiptip/jquery.tipTip.js"></script>
+    <link rel="stylesheet" href="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/datatables/media/css/jquery.dataTables.css" type="text/css" />
+	<script src="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/datatables/media/js/jquery.dataTables.min.js"></script>
 	
 
 	<script>
