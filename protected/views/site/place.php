@@ -198,7 +198,7 @@ foreach($childplaces as $childplace) {
         <a name="yt"></a>
         <a name="buildingclasses"></a>
         <h3 name="buildingclasses-header">Classes in this <?php echo $place->placetype->singular; ?></h2>
-        <div class="right">
+        <div id="classes-container" class="right">
             Classes for 
             <label for="yt-select" class="hide">Select Year/Term</label>
             <select name="yt" id="yt-select">
@@ -229,7 +229,6 @@ foreach($childplaces as $childplace) {
                     <th class="calign">Times</th>
                 </tr>
             </thead>
-            <?php if(count($classes) > 0): ?>
             <?php $count=0; foreach($classes as $class): $count++; ?>
                 <?php
                 # Do some processing before displaying
@@ -271,13 +270,6 @@ foreach($childplaces as $childplace) {
                 <td class="calign"><?php echo @$starttime." - ".@$endtime; ?></td>
             </tr>
             <?php endforeach; ?>
-            <?php else: ?>
-            <tr>
-                <td class="empty" colspan="7">
-                    There are no classes in this <?php echo strtolower($place->placetype->singular); ?> currently.
-                </td>
-            </tr>
-            <?php endif; ?>
         </table>
     </div>
 </div>
@@ -331,6 +323,15 @@ function afterWindowScroll($stuck) {
 jQuery(document).ready(function($){
     init();
     
+    $("table.classes-table").dataTable({
+        "language": {
+            "search": "Filter Classes:",
+            "zeroRecords": "Could not find classes matching this filter.",
+            "lengthMenu": "Show _MENU_ classes at a time",
+            "emptyTable": "There are no classes for <?php echo yearterm_code_to_display($yt); ?> for the <?php echo $place->placename." ".strtolower($place->placetype->singular); ?>.",
+            "info": "Showing <Strong>_START_</strong> to <Strong>_END_</strong> of <Strong>_TOTAL_</strong> classes",
+        }
+    });
     
     $("a.ri").click(function(){
        var $val = $(this).text();
@@ -367,10 +368,13 @@ function init()
 {
     Galleria.run("#galleria", {
         lightbox: true,
-        dummy: "<?php echo WEB_IMAGE_LIBRARY.'images/no_image_available.png'; ?>",
-        extend: function() {
-            var gallery = this; // "this" is the gallery instance
-        }
+        showCounter: false,
+        width: 800, /* scale accordingly */
+        carousel: true,
+        showImagenav: true,
+        thumbFit: true,
+        thumbMargin: 0,
+        imageCrop: "height"
     });
     
     Galleria.ready(function(){

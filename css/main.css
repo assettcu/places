@@ -330,3 +330,8 @@ div#search-hint {
 	padding-left:20px;
 	font-size:.9em;
 }
+div#classes-container {
+	float: right !important;
+	margin-bottom:15px;
+	margin-top:-10px;
+}
