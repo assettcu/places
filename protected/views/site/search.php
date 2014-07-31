@@ -1,11 +1,7 @@
-<?php
-$places = search($_REQUEST["q"]);
-?>
-
 <h1>Search for Places</h1>
 
 <div class="search-query">
-	You searched for &quot;<span class="text-blue" id="query"><?=$_REQUEST["q"];?></span>&quot;. Found <span class="text-orange" id="count"><?=count($places);?></span> results.
+	You searched for &quot;<span class="text-blue" id="query"><?=$_REQUEST["q"];?></span>&quot;. Found <span class="text-orange" id="count"><input type="hidden" name="count-field" id="count-field" value="<?php echo count($places); ?>" /><?php echo count($places);?></span> results.
 </div>
 
 <ul class="rig columns-4">
@@ -25,6 +21,17 @@ $places = search($_REQUEST["q"]);
             <p><?php echo $place->description; ?></p>
             <?php endif; ?>
             <div class="placetype-<?php echo $place->placetype->machinecode; ?>"><?php echo $place->placetype->singular; ?></div>
+            <?php
+            if($search_type == "classes") {
+                if(preg_match("/".$_REQUEST["q"]."/i",$place->class,$matches)) {
+                    echo preg_replace("/".$_REQUEST["q"]."/i","<span class='text-violet'>".@$matches[0]."</span>",$place->class);
+                }
+                else {
+                    echo $place->class;
+                }
+                echo " (".yearterm_code_to_display($place->yearterm).")";
+            }
+            ?>
          </a>
     </li>
     <?php endforeach; ?>
