@@ -39,9 +39,7 @@ class PictureObj extends FactoryObj
       return true;
     }
     if(!$this->integrity_check()) {
-        echo ROOT.$this->path;
-        StdLib::vdump($this);
-        // $this->delete();
+        $this->delete();
     }
     
     return false;

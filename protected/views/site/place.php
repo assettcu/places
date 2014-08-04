@@ -73,6 +73,7 @@ foreach($childplaces as $childplace) {
     $childplace_names[] = $childplace->placename;
 }
 ?>
+
 <h1 class="hide"><?php echo $place->placename; ?></h1>
 <div class="entry">
     
@@ -114,7 +115,8 @@ foreach($childplaces as $childplace) {
     </div>
     <a name="home"></a>
     <div class="content">
-        <div class="images">
+        <div class="images" style="position:relative;">
+            <img src="<?php echo WEB_LIBRARY_PATH; ?>images/loading-images.gif" class="loading-gif"/>
             <div class="galleria">
                 <?php 
                 if($place->has_pictures()) {
@@ -283,16 +285,6 @@ foreach($childplaces as $childplace) {
 
 <script src="<?php echo WEB_LIBRARY_PATH; ?>jquery/modules/galleria/galleria-1.3.6.min.js"></script>
 
-<style>
-.galleria {
-    height:450px;
-    width:800px;
-}
-.galleria-container {
-    background: #f0f0f0;
-    border-radius:3px;
-}
-</style>
 
 <script>
 
@@ -388,10 +380,10 @@ function init()
         'imageCrop': 'landscape',
         'imagePosition': 'center center',
         'lightbox': true,
-        'responsive': false,
-        'idleMode': false,
     });
-    Galleria.configure();
+    Galleria.on("loadfinish",function(e){
+        $("div.galleria").css("visibility","visible");
+    });
 }
 </script>
 <?php
