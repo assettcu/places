@@ -8,11 +8,13 @@ $places = load_places($type);
 <h1 class="hide">Places Around the Campus</h1>
 
 <ul class="rig columns-4">
-    <?php foreach($places as $place):
-              $image = $place->load_first_image();
-              if(!$image->loaded)
-                $image = new PictureObj(1);
-                $thumb = $image->get_thumb();
+    <?php 
+    foreach($places as $place):
+        $image = $place->load_first_image();
+        if(!$image->loaded) {
+            $image = new PictureObj(1);
+        }
+        $thumb = $image->get_thumb();
     ?>
     <li>
         <a href="<?php echo Yii::app()->createUrl('place'); ?>?id=<?php echo $place->placename; ?>">

@@ -73,6 +73,7 @@ foreach($childplaces as $childplace) {
     $childplace_names[] = $childplace->placename;
 }
 ?>
+
 <h1 class="hide"><?php echo $place->placename; ?></h1>
 <div class="entry">
     
@@ -114,14 +115,22 @@ foreach($childplaces as $childplace) {
     </div>
     <a name="home"></a>
     <div class="content">
-        <div class="images">
-            <div id="galleria">
+        <div class="images" style="position:relative;">
+            <img src="<?php echo WEB_LIBRARY_PATH; ?>images/loading-images.gif" class="loading-gif"/>
+            <div class="galleria">
                 <?php 
                 if($place->has_pictures()) {
-                    $place->render_pictures();
+                    $pictures = $place->load_images();
+                    foreach($pictures as $picture) {
+                        if(!$picture->loaded) continue;
+                        echo "<a href='".$picture->load_image_href()."'>";
+                        $picture->render_thumb();
+                        echo "</a>";
+                    }
                 } 
                 else {
-                    $place->render_no_image();
+                    $picture = new PictureObj(1);
+                    $picture->render();
                 }
                 ?>
             </div>
@@ -274,11 +283,10 @@ foreach($childplaces as $childplace) {
     </div>
 </div>
 
-<script src="<?php echo WEB_LIBRARY_PATH; ?>jquery/modules/galleria/galleria-1.3.5.js"></script>
-<link type="text/css" rel="stylesheet" href="<?php echo WEB_LIBRARY_PATH; ?>jquery/modules/galleria/themes/classic/galleria.classic.css" />
+<script src="<?php echo WEB_LIBRARY_PATH; ?>jquery/modules/galleria/galleria-1.3.6.min.js"></script>
+
 
 <script>
-Galleria.loadTheme('<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/galleria/themes/classic/galleria.classic.min.js');
 
 function scrollToHash()
 {
@@ -366,21 +374,15 @@ jQuery(document).ready(function($){
 });
 function init()
 {
-    Galleria.run("#galleria", {
-        lightbox: true,
-        showCounter: false,
-        width: 800, /* scale accordingly */
-        carousel: true,
-        showImagenav: true,
-        thumbFit: true,
-        thumbMargin: 0,
-        imageCrop: "height"
+    Galleria.loadTheme('<?php echo WEB_LIBRARY_PATH; ?>jquery/modules/galleria/themes/classic/galleria.classic.min.js');
+    Galleria.run('.galleria');
+    Galleria.configure({
+        'imageCrop': 'landscape',
+        'imagePosition': 'center center',
+        'lightbox': true,
     });
-    
-    Galleria.ready(function(){
-        this.bind('image', function(e) {
-            e.imageTarget.alt = e.galleriaData.description;
-        }); 
+    Galleria.on("loadfinish",function(e){
+        $("div.galleria").css("visibility","visible");
     });
 }
 </script>

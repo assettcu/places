@@ -4,6 +4,7 @@ class PictureObj extends FactoryObj
 {
   
   private $post_loading = false;
+  public $attributes = array();
   
   public function __construct($pictureid=null)
   {
@@ -37,8 +38,16 @@ class PictureObj extends FactoryObj
       
       return true;
     }
+    if(!$this->integrity_check()) {
+        $this->delete();
+    }
     
     return false;
+  }
+  
+  private function integrity_check() 
+  {
+      return is_file(ROOT.$this->path);
   }
     
   public function get_last_sorder()
@@ -58,7 +67,7 @@ class PictureObj extends FactoryObj
       
     public function render_boxfit_y($size)
     {
-        $imager = new Imager(getcwd().$this->path);
+        $imager = new Imager(ROOT.$this->path);
         $imager->resize($size,"auto");
     
         return $imager->render(); 
@@ -66,7 +75,7 @@ class PictureObj extends FactoryObj
   
   public function render_boxfit($size)
   {
-    $imager = new Imager(getcwd().$this->path);
+    $imager = new Imager(ROOT.$this->path);
     if($imager->width >= $imager->height)
         $imager->resize($size,"auto");
     else
@@ -79,21 +88,38 @@ class PictureObj extends FactoryObj
     
   public function render($width="auto",$height="auto",$type="resize")
   {
-    $imager = new Imager(getcwd().$this->path);
+    $imager = new Imager(ROOT.$this->path);
+
+    foreach($this->attributes as $index=>$attribute) {
+        $imager->add_attribute($index, $attribute);
+    }
+    
     $imager->$type($width,$height);
     
     return $imager->render();
   }
   
+  public function render_thumb()
+  {
+    $imager = new Imager($this->get_thumb_path());
+
+    foreach($this->attributes as $index=>$attribute) {
+        $imager->add_attribute($index, $attribute);
+    }
+    
+    return $imager->render();
+      
+  }
+  
   public function load_image_href()
   {
-    $imager = new Imager(getcwd().$this->path);
+    $imager = new Imager(ROOT.$this->path);
     return $imager->imagehttp;
   }
  
   public function crop($size,$target)
   {
-  	$imager = new Imager(getcwd().$this->path);
+  	$imager = new Imager(ROOT.$this->path);
 	$imager->crop($target,$size,"auto");
   }
   
@@ -105,10 +131,10 @@ class PictureObj extends FactoryObj
 	$imagedir = array_shift($path);
 	$path_ = "";
 	if(!empty($path)) $path_ = implode("/",$path);
-	$thumbdir = getcwd()."/".$imagedir."/thumbs/".$path_;
+	$thumbdir = ROOT."/".$imagedir."/thumbs/".$path_;
 	if(!is_dir($thumbdir)) mkdir($thumbdir,0700,true);
-	$thumbpath = getcwd()."/".$imagedir."/thumbs/".$path_."/".$file;
-	$href = Yii::app()->baseUrl."/".$imagedir."/thumbs/".$path_."/".$file;
+	$thumbpath = ROOT."/".$imagedir."/thumbs/".$path_."/".$file;
+	$href = Yii::app()->baseUrl."/".$imagedir."/thumbs/".(!empty($path_)?$path_."/":"").$file;
 	
 	if(!is_file($thumbpath)){
 		$this->crop("500",$thumbpath);
@@ -125,9 +151,9 @@ class PictureObj extends FactoryObj
 	$imagedir = array_shift($path);
 	$path_ = "";
 	if(!empty($path)) $path_ = implode("/",$path);
-	$thumbdir = getcwd()."/".$imagedir."/thumbs/".$path_;
+	$thumbdir = ROOT."/".$imagedir."/thumbs/".$path_;
 	if(!is_dir($thumbdir)) mkdir($thumbdir,0700,true);
-	$thumbpath = getcwd()."/".$imagedir."/thumbs/".$path_."/".$file;
+	$thumbpath = ROOT."/".$imagedir."/thumbs/".$path_."/".$file;
 	
 	return $thumbpath;
   }
@@ -142,7 +168,7 @@ class PictureObj extends FactoryObj
   
   public function has_file()
   {
-      if($this->loaded and is_file(getcwd().$this->path)) {
+      if($this->loaded and is_file(ROOT.$this->path)) {
           return true;
       }
       return false;
@@ -151,7 +177,7 @@ class PictureObj extends FactoryObj
   public function pre_delete()
   {
 	if($this->has_file()) {
-		@unlink(getcwd().$this->path);
+		@unlink(ROOT.$this->path);
 	}
   }
   
