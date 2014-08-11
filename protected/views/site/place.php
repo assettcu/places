@@ -238,7 +238,7 @@ foreach($childplaces as $childplace) {
                     <th class="calign">Times</th>
                 </tr>
             </thead>
-            <?php $count=0; foreach($classes as $class): $count++; ?>
+            <?php if(!empty($classes)): $count=0; foreach($classes as $class): $count++; ?>
                 <?php
                 # Do some processing before displaying
                 $starttime  = $class["timestart"];
@@ -278,7 +278,7 @@ foreach($childplaces as $childplace) {
                 <td class="calign"><?php echo $class["meetingdays"]; ?></td>
                 <td class="calign"><?php echo @$starttime." - ".@$endtime; ?></td>
             </tr>
-            <?php endforeach; ?>
+            <?php endforeach; endif; ?>
         </table>
     </div>
 </div>
