@@ -342,3 +342,6 @@ div#classes-container {
 	margin-top:-10px;
 }
 
+.help-field {
+	font-variant: small-caps;
+}

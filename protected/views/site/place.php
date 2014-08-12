@@ -141,6 +141,7 @@ foreach($childplaces as $childplace) {
         <h3 name="relevant-info-header"><?php echo $place->placetype->singular; ?> Information</h3>
         <div class="meta">
             <div class="metachoice building-info">
+                <span class="help-field">Show Information For</span>: 
                 <a href="#" class="ri selected" onclick="javascript:return false;">All</a> |
                 <?php if($place->has_metadata_for("students")): ?>
                 <a href="#" class="ri" onclick="javascript:return false;">Students</a> |
@@ -172,6 +173,7 @@ foreach($childplaces as $childplace) {
         <h3 name="spaces-header">Spaces in this <?php echo $place->placetype->singular; ?></h2>
         
         <div class="metachoice spaces">
+            <span class="help-field">Show Only These Spaces</span>: 
             <a href="#" class="ri selected" onclick="javascript:return false;">All</a> |
             <?php if($place->has_space("classroom")): ?>
             <a href="#" class="ri" onclick="javascript:return false;">Classrooms</a> |
