@@ -114,7 +114,7 @@ foreach($childplaces as $childplace) {
     <a name="home"></a>
     <div class="content">
         <div class="images" style="position:relative;">
-            <img src="<?php echo WEB_LIBRARY_PATH; ?>images/loading-images.gif" class="loading-gif"/>
+            <img src="<?php echo WEB_LIBRARY_PATH; ?>images/loading-images.gif" class="loading-gif" alt="Please wait while images are being loaded."/>
             <div class="galleria">
                 <?php 
                 if($place->has_pictures()) {
@@ -122,6 +122,7 @@ foreach($childplaces as $childplace) {
                     foreach($pictures as $picture) {
                         if(!$picture->loaded or $picture->hidden == 1) continue;
                         echo "<a href='".$picture->load_image_href()."'>";
+                        $picture->attributes["alt"] = $picture->description;
                         $picture->render_thumb();
                         echo "</a>";
                     }
