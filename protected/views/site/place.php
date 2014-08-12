@@ -435,6 +435,7 @@ function init()
         'imageCrop': 'landscape',
         'imagePosition': 'center center',
         'lightbox': true,
+        'transition': 'fade'
     });
     Galleria.on("loadfinish",function(e){
         $("div.galleria").css("visibility","visible");
