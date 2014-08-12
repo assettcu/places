@@ -441,7 +441,7 @@ var doc    = window.document,
                 var clearStyle = function( elem ) {
                     setStyle( elem, 'none', 'transition' );
                     if ( Galleria.WEBKIT && Galleria.TOUCH ) {
-                        setStyle( elem, 'translate3d(0,0,0)', 'transform' );
+                        // setStyle( elem, 'translate3d(0,0,0)', 'transform' );
                         if ( elem.data('revert') ) {
                             elem.css( elem.data('revert') );
                             elem.data('revert', null);
@@ -547,7 +547,7 @@ var doc    = window.document,
                                     strings.push('-webkit-transform' + syntax);
 
                                     // 3d animate
-                                    setStyle( elem, 'translate3d(' + form.join(',') + ')', 'transform');
+                                    // setStyle( elem, 'translate3d(' + form.join(',') + ')', 'transform');
                                 }
                             }
 
@@ -6289,7 +6289,7 @@ Galleria.Picture.prototype = {
 
                         // translate3d if needed
                         if ( Galleria.HAS3D ) {
-                            this.style.MozTransform = this.style.webkitTransform = 'translate3d(0,0,0)';
+                            // this.style.MozTransform = this.style.webkitTransform = 'translate3d(0,0,0)';
                         }
 
                         $container.append( this );
@@ -6618,7 +6618,7 @@ Galleria.Finger = (function() {
         for (; t[i]; i++) {
             s = t[i] ? t[i]+'Transform' : a;
             if (el.style[s] !== undefined) {
-                el.style[s] = "translate3d(1px,1px,1px)";
+                // el.style[s] = "translate3d(1px,1px,1px)";
                 has3d = $(el).css(t[i] ? '-'+t[i].toLowerCase()+'-'+a : a);
             }
         }
@@ -6699,7 +6699,7 @@ Galleria.Finger = (function() {
                 style.left = self.pos+'px';
                 return;
             }
-            style.MozTransform = style.webkitTransform = style.transform = 'translate3d(' + self.pos + 'px,0,0)';
+            // style.MozTransform = style.webkitTransform = style.transform = 'translate3d(' + self.pos + 'px,0,0)';
             return;
         };
 
