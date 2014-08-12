@@ -337,4 +337,29 @@ class PlacesObj extends FactoryObj
       return new PlacesObj($this->parentid);
   }
   
+  public function has_parent()
+  {
+      return ($this->parentid != 0);
+  }
+  
+  public function has_space($placetype) {
+      return (Yii::app()->db->createCommand()
+        ->select("COUNT(*)")
+        ->from("places")
+        ->where("placetypeid = (SELECT placetypeid FROM placetypes WHERE machinecode = :machinecode LIMIT 1) AND parentid = :parentid",
+            array(":machinecode"=>$placetype,":parentid"=>$this->placeid)
+        )
+        ->queryScalar() !=0);
+  }
+  
+  public function has_metadata_for($person) {
+      return (Yii::app()->db->createCommand()
+        ->select("COUNT(*)")
+        ->from("metadataext")
+        ->where("metatype = :metatype AND metadata_machinecode = :metadata_machinecode",
+            array(":metatype"=>$person,":metadata_machinecode"=>"metadata_".$this->placetype->machinecode)
+        )
+        ->queryScalar() !=0);
+  }
+  
 }

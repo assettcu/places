@@ -59,8 +59,8 @@ $mainconfig = array(
     // application-level parameters that can be accessed
     // using Yii::app()->params['paramName']
     'params'=>array(
-        'LOCALAPP_JQUERY_VER'       => '1.10.2',
-        'LOCALAPP_JQUERYUI_VER'     => '1.10.3',
+        'LOCALAPP_JQUERY_VER'       => '2.1.1',
+        'LOCALAPP_JQUERYUI_VER'     => '1.11.0',
     ),
     // If install file still exists, redirect to install page
     'catchAllRequest'=>(!file_exists(dirname(__FILE__).'/main-ext.php')) ? array('site/install') : null,

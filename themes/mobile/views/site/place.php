@@ -123,17 +123,21 @@ function footer() {
         <a href="#" class="ui-btn ui-btn-right ui-btn-icon-right"><span class="icon icon-search"> </span> Search</a>
     </div>
     
-    <div class="gallery">
-        <div class="gallery-row">
-            <?php foreach($place->images as $image): $image->make_thumb(true); ?>
-            <div class="gallery-item">
-                <a href="<?php echo Yii::app()->baseUrl.$image->path; ?>" rel="external">
-                    <img src="<?php echo $image->get_thumb(); ?>" />
-                </a>
-            </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
+    <ul class="rslides" id="slider2">
+        <?php foreach($place->images as $image): $image->make_thumb(true); ?>
+            <li><a href="#"><img src="<?php echo Yii::app()->baseUrl.$image->path; ?>" alt=""></a></li>
+        <?php endforeach; ?>
+    </ul>
+    
+    <script>
+    // Slideshow 2
+    $("#slider2").responsiveSlides({
+        auto: false,
+        pager: true,
+        speed: 300,
+        maxwidth: 540
+    });
+    </script>
     
     <?php footer(); ?>
 

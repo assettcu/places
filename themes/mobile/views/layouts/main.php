@@ -19,7 +19,10 @@
     <script type="text/javascript" src="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/photoswipe/1.0.11/code-photoswipe-jQuery-1.0.11.min.js"></script>
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script> 
     <script type="text/javascript" src="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/map/ui/min/jquery.ui.map.min.js"></script>
-
+    
+    <link rel="stylesheet" href="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/responsiveslides/responsiveslides.css">
+    <script src="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/responsiveslides/responsiveslides.min.js"></script>
+    
     <script type="text/javascript">
         jQuery(document).on("pagecreate",function(event){
           
