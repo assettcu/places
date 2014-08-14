@@ -34,7 +34,7 @@ $place->load_metadata();
 # Load classes for a building
 if($place->placetype->machinecode == "building") {
     $classes = StdLib::external_call(
-        "http://assettdev.colorado.edu/ascore/api/buildingclasses",
+        "http://compass.colorado.edu/ascore/api/buildingclasses",
         array(
             "building"  => $place->metadata->data["building_code"]["value"],
             "term"      => $yt, # Semester/Year to lookup
@@ -47,7 +47,7 @@ else if($place->placetype->machinecode == "classroom") {
     $parent->load_metadata();
     $building_code = $parent->metadata->data["building_code"]["value"];
     $classes = StdLib::external_call(
-        "http://assettdev.colorado.edu/ascore/api/classroomclasses",
+        "http://compass.colorado.edu/ascore/api/classroomclasses",
         array(
             "building"  => $building_code,
             "classroom" => $place->placename,
@@ -61,7 +61,7 @@ else {
 }
 
 $yearterms = StdLib::external_call(
-    "http://assettdev.colorado.edu/ascore/api/uniqueyearterms"
+    "http://compass.colorado.edu/ascore/api/uniqueyearterms"
 );
 
 # Load children places

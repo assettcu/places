@@ -31,10 +31,19 @@ table.fancy-table tbody tr td span.hint {
 table.fancy-table tbody tr.odd td {
     background-color:#f5f5f9;
 }
+
+/** Used for fancy-ing tables **/
+	
 table tbody tr td.empty {
 	padding:20px;
 	text-align:center;
 	vertical-align:middle;
+}
+
+table tbody tr td input,
+table tbody tr td select,
+table tbody tr td textarea {
+	padding:3px;
 }
 
 /** Front-page table **/
@@ -82,15 +91,16 @@ table.modal-table tr th div {
 }
 
 /** Post CU Property Table **/
-table#post-form-table tr th {
+table.fancy-table tr th {
     vertical-align: top;
 }
-table#post-form-table tr th div {
+table.fancy-table tr th div {
     padding:5px;
     border:2px solid #ccc;
     background-color:#f0f0f0;
+    font-size:13px;
 }
-table#post-form-table tr td {
+table.fancy-table tr td {
     padding-left:15px;
 }
 
@@ -114,16 +124,16 @@ div.button-container {
 }
 div.button-container button {
 }
-table#post-form-table tr td textarea {
+table.fancy-table tr td textarea {
     font-family: Verdana, Geneva, sans-serif;
 }
-table#post-form-table tr th div.highlight {
+table.fancy-table tr th div.highlight {
 	border:2px solid #ffcc33;
 	color:#ffcc33;
 	background-color:#fffcf0;
 	font-weight:bold;
 }
-table#post-form-table tr th div.error {
+table.fancy-table tr th div.error {
 	border:2px solid #CC0000;
 	background-color:#fff0f0;
 	color:#CC0000;

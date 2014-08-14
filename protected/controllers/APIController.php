@@ -33,6 +33,25 @@ class APIController extends BaseController
         
         $place = new PlacesObj($request["id"]);
         $place->load_metadata();
+        $place->load_images();
+        
+        if(!empty($place->images)) {
+            $image = "<img src='".$place->get_thumb_path($place->images[0],"href")."' width='50px' height='50px' style='vertical-align:top;margin-right:6px;margin-bottom:6px;' />";
+        }
+        else {
+            $image = "";
+        }
+        ob_start();
+        ?>
+        <div class="content-box" style="font-size:15px;width:230px;min-height:50px;">
+            <?php echo $image; ?>
+            <span class="title" style="font-size:18px;"><?php echo $place->placename; ?></span><br/>
+            <span class="description"><?php echo $place->description; ?></span>
+            <div style="margin-top:10px;"><a href="#">Get Directions To Here</a></div>
+        </div>
+        <?php
+        $contents = ob_get_contents();
+        ob_end_clean();
         
         $markers = array(
             "markers"   => array(
@@ -40,12 +59,11 @@ class APIController extends BaseController
                     "latitude"  => $place->metadata->data["latitude"]["value"],
                     "longitude" => $place->metadata->data["longitude"]["value"],
                     "title"     => $place->placename,
-                    "content"   => "Content about place here"
+                    "content"   => $contents,
                 )
             )
         );
         
         return print json_encode($markers);
-        # json_encode($classes);
     }
 }

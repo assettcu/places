@@ -38,9 +38,9 @@ class Flashes {
 			foreach($flashes as $key=>$message) {
 				$icon = $this->get_icon($key);
 				switch($key) {
-					case "success": echo '<div class="ui-state-highlight flash">'.$icon.$message.'</div>'; break;
-					case "error": echo '<div class="ui-state-error flash">'.$icon.$message.'</div>'; break;
-					default: echo '<div class="ui-state-highlight flash">'.$icon.$message.'</div>'; break;
+					case "success": echo '<div class="ui-state-highlight ui-corner-all flash">'.$icon.$message.'</div>'; break;
+					case "error": echo '<div class="ui-state-error ui-corner-all flash">'.$icon.$message.'</div>'; break;
+					default: echo '<div class="ui-state-highlight ui-corner-all flash">'.$icon.$message.'</div>'; break;
 				}
 				
 			}
@@ -73,4 +73,18 @@ class Flashes {
 		
 		return $icon;
 	}
+	
+	public static function create_flash($type,$messages=array())
+    {
+        if(empty($messages)) {
+            return;
+        }
+        foreach($messages as $key=>$message) {
+            if(is_array($message)) {
+                $message = implode("<br/>",$message);
+            }
+            $message = (StdLib::is_programmer()) ? $key.": ".$message : $message;
+            Yii::app()->user->setFlash($type,$message);
+        }
+    }
 }

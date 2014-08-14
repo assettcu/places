@@ -33,6 +33,7 @@ $mainconfig = array(
   			'showScriptName'=>false,
 			'rules'=>array(
 				'<id:\d+>'=>'site/view',
+				'backend'=>'backend/index',
 				'<action:\w+>/<id:\d+>'=>'site/<action>',
 				'<action:\w+>'=>'site/<action>',
 			),

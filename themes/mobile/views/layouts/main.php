@@ -21,12 +21,23 @@
     <script type="text/javascript" src="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/map/ui/min/jquery.ui.map.min.js"></script>
     
     <link rel="stylesheet" href="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/responsiveslides/responsiveslides.css">
+    <link rel="stylesheet" href="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/responsiveslides/demo/demo.css">
     <script src="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/responsiveslides/responsiveslides.min.js"></script>
     
     <script type="text/javascript">
+        jQuery(document).on("pagechange",function(event,data){
+            var page = data.toPage[0].id;
+            if(page == "map") {
+                jQuery("#map_canvas").css({'height':$(window).height()-170});
+                jQuery('#map_canvas').gmap('refresh');
+            }
+            else if(page == "images") {
+                jQuery("#slider2").css({'height':$(window).height()-170});
+            }
+        });
+        
         jQuery(document).on("pagecreate",function(event){
-          
-            jQuery("#map_canvas").css({'height':$(window).height()-170});
+            
             if(window.orientation == 0) { 
                 jQuery("span.nav-text").hide();
             }
@@ -34,28 +45,33 @@
                 jQuery("span.nav-text").show();
             } 
             jQuery(window).on("orientationchange",function(){
-                
-                jQuery("#map_canvas").css({'height':$(window).height()-100});
+                jQuery("#map_canvas").css({'height':$(window).height()-170});
                 if(window.orientation == 0)
                 { 
                     jQuery("span.nav-text").hide();
                 }
                 else {
                     jQuery("span.nav-text").show();
-                } 
-            });
-            
-        });
-        $(document).on("pagecreate","#classes",function(){
-            $("#yt").on('change',function(){
-                $.ajax({
-                   "url":   "<?php echo Yii::app()->baseUrl; ?>/ajax/loadclasses/id/<?php echo @$_REQUEST["id"]; ?>/yt/"+$("#yt").val(),
-                   "success": function(data) {
-                       $("#myTable tbody").html(data).parent().enhanceWithin().refresh();
-                   } 
-                });
+                }
             });
         });
+        
+        jQuery("#images").bind("pageinit",function(event){
+            // Slideshow 2
+            jQuery("#slider2").responsiveSlides({
+                auto: false,
+                pager: true,
+                nav:true,
+                speed: 300,
+                maxwidth: $(window).width(),
+                namespace: "centered-btns",
+                pagination: [{
+                    position: 'T_C',
+                }]
+            });
+            jQuery("#slider2 img").css({'height':$(window).height()-170});
+        });
+        
         $(function(){
             $('#map_canvas').gmap().bind('init', function() { 
                 // This URL won't work on your localhost, so you need to change it
@@ -69,7 +85,19 @@
                             $('#map_canvas').gmap('openInfoWindow', { 'content': marker.content }, this);
                         });
                         $('#map_canvas').gmap('option','zoom',18);
+                        $('#map_canvas').gmap('openInfoWindow', { 'content': marker.content }, this);
                     });
+                });
+            });
+        });
+        
+        $(document).on("pagecreate","#classes",function(){
+            $("#yt").on('change',function(){
+                $.ajax({
+                   "url":   "<?php echo Yii::app()->baseUrl; ?>/ajax/loadclasses/id/<?php echo @$_REQUEST["id"]; ?>/yt/"+$("#yt").val(),
+                   "success": function(data) {
+                       $("#myTable tbody").html(data).parent().enhanceWithin().refresh();
+                   } 
                 });
             });
         });
