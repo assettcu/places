@@ -291,6 +291,10 @@ class BackendController extends BaseController
                 $count++;
             }
         }
+
+        $place->load_images();
+        $place->load_metadata();
+        $params["place"] = $place;
         
         $this->render("editplace",$params);
     }
