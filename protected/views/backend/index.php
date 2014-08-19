@@ -10,4 +10,4 @@ a {
     Do administrative things!
 </div>
 <a href="<?php echo Yii::app()->createUrl('backend/new'); ?>"><span class="icon icon-plus"> </span>Add a Place</a><br/><br/>
-<a href="<?php echo Yii::app()->createUrl('backend/managephotos'); ?>"><span class="icon icon-picassa"> </span>Manage Photos</a>
+<a href="<?php echo Yii::app()->createUrl('backend/manageplaces'); ?>"><span class="icon icon-home3"> </span>Manage Places</a>
