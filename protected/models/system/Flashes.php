@@ -74,17 +74,22 @@ class Flashes {
 		return $icon;
 	}
 	
-	public static function create_flash($type,$messages=array())
+	public static function create_flash($type,$messages="")
     {
         if(empty($messages)) {
             return;
         }
-        foreach($messages as $key=>$message) {
-            if(is_array($message)) {
-                $message = implode("<br/>",$message);
+        if(is_string($messages)) {
+           Yii::app()->user->setFlash($type,$messages);
+        }
+        else if(is_array($messages)) {
+            foreach($messages as $key=>$message) {
+                if(is_array($message)) {
+                    $message = implode("<br/>",$message);
+                }
+                $message = (StdLib::is_programmer()) ? $key.": ".$message : $message;
+                Yii::app()->user->setFlash($type,$message);
             }
-            $message = (StdLib::is_programmer()) ? $key.": ".$message : $message;
-            Yii::app()->user->setFlash($type,$message);
         }
     }
 }

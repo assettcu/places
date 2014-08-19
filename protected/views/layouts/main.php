@@ -95,7 +95,7 @@ $theme = "bluebird";
 </div><!-- page -->
 
     <div id="footer">
-        <div class="left-footer">Developed by <a href="http//assett.colorado.edu">ASSETT</a>.</div>
+        <div class="left-footer">Developed by <a href="http//assett.colorado.edu">ASSETT</a>. | <?php if(!Yii::app()->user->isGuest): ?><a href="<?php echo Yii::app()->createUrl('backend/index'); ?>">Backend</a><?php endif; ?></div>
         <div class="right-footer">Copyright &copy; <?php echo date("Y"); ?></div>
         <div class="mid-footer">All Rights Reserved <span class="footer-divide">|</span> <div class="footer-culink"><a href="http//colorado.edu">University of Colorado Boulder</a></div></div>
     </div><!-- footer -->

@@ -162,7 +162,7 @@ class FactoryObj
 		$result = Yii::app()->db->createCommand()
             ->select("COUNT(*)")
             ->from($this->table)
-            ->where($this->uniqueid." = :".$this->uniqueid, array(":".$this->uniqueid => $this->uniqueid))
+            ->where($this->uniqueid." = :".$this->uniqueid, array(":".$this->uniqueid => $this->{$this->uniqueid}))
             ->queryScalar();
 		return ((integer)$result!=0);
 	}

@@ -1,8 +1,8 @@
 /** Used for fancy-ing tables **/
 	
 table.fancy-table {
-    border-collapse:collapse;
-    border-spacing:0px;
+    border-collapse:separate;
+    border-spacing:3px;
     font-size:0.8em;
 }
 table.fancy-table thead tr th {
@@ -13,7 +13,8 @@ table.fancy-table thead tr th {
     font-weight:bold;
 }
 table.fancy-table tbody tr td {
-    padding:5px;
+	vertical-align: middle;
+	margin:none;
 }
 table.fancy-table tbody tr td.label {
     width:150px;
@@ -23,6 +24,7 @@ table.fancy-table tbody tr td.label {
 table.fancy-table tbody tr td.form-input {
     width:500px;
     padding-left:10px;
+	margin:none;
 }
 table.fancy-table tbody tr td span.hint {
     color:#999;
@@ -44,6 +46,7 @@ table tbody tr td input,
 table tbody tr td select,
 table tbody tr td textarea {
 	padding:3px;
+	margin:none;
 }
 
 /** Front-page table **/

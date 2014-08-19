@@ -96,7 +96,7 @@ foreach($childplaces as $childplace) {
       <li><a href="#" onclick="javascript:return false;"><span class="icon <?php echo $place->placetype->icon; ?>"> </span> <?php echo $place->placename; ?></a></li>
     </ul>
     
-    <h2><?php echo $place->placename; ?></h2>
+    <h2><?php echo $place->placename; ?><?php if(!Yii::app()->user->isGuest): ?> (<a href="<?php echo Yii::app()->createUrl('backend/editplace'); ?>?id=<?php echo $place->placename; ?>">edit</a>)<?php endif; ?></h2>
     <div class="nav sticky" sticky="150">
         <ul>
             <li><div id="menu-placename"><?php echo $place->placename; ?></div></li>
@@ -134,6 +134,31 @@ foreach($childplaces as $childplace) {
                 ?>
             </div>
             <br class="clear" />
+            <?php if(!empty($place->tags)): ?>
+            <style>
+            div.tags {
+                font-size:0.8em;
+            }
+            span.tag a {
+                font-style:italic;
+                color:#999;
+                text-decoration:none;
+            }
+            span.tag a:hover {
+                color:#FF9900;
+            }
+            </style>
+            <div class="tags">
+                Tags: 
+                <?php
+                $tags = explode(",",$place->tags); 
+                foreach($tags as $tag) {
+                    $outputtags[] = "<span class=\"tag\"><a href=\"".Yii::app()->createUrl('search')."?q=".strtolower($tag)."\">".strtolower($tag)."</a></span>";
+                }
+                echo implode(", ",$outputtags);
+                ?>
+            </div>
+            <?php endif; ?>
         </div>
         
         <br class="clear" />

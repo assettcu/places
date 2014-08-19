@@ -156,6 +156,52 @@ class AJAXController extends BaseController
         return print $output;
     }
 
+    public function actionLoadPlaces()
+    {
+        $rest = new RestServer();
+        $request = RestUtils::processRequest();
+        $required = array("placetypeid");
+        $keys = array_keys($request);
+        if(count(array_intersect($required, $keys)) != count($required)) {
+            return RestUtils::sendResponse(308);
+        }
+        
+        $results = Yii::app()->db->createCommand()
+            ->select("placeid, placename, parentid")
+            ->from("places")
+            ->where("placetypeid = :placetypeid",
+                array("placetypeid"=>$request["placetypeid"])
+            )
+            ->order("parentid ASC, placename ASC")
+            ->queryAll();
+        
+        if(empty($results)) {
+            $output = "<option value='0'></option>";
+        }
+        else {
+            ob_start();
+            $curparentid = -1;
+            $header = false;
+            foreach($results as $row) {
+                if($curparentid != $row["parentid"] and $header) {
+                    echo "</optgroup>";
+                }
+                if($curparentid != $row["parentid"]) {
+                    $header = true;
+                    $parent = new PlacesObj($row["parentid"]);
+                    if($parent->loaded) {
+                        $curparentid = $row["parentid"];
+                        echo "<optgroup label='".$parent->placename."'>";
+                    }
+                }
+                echo "<option value='".$row["placeid"]."'>".$row["placename"]."</option>";
+            }
+            $output = ob_get_contents();
+            ob_end_clean();
+        }
+        return print $output;
+    }
+
     public function actionUploadImages()
     {
         
@@ -177,7 +223,7 @@ class AJAXController extends BaseController
         header("Pragma: no-cache");
         
         // Settings
-        $targetDir = getcwd().'/images/temp/'.Yii::app()->user->name."/";
+        $targetDir = getcwd().'/temp/'.Yii::app()->user->name."/";
         
         $cleanupTargetDir = true; // Remove old files
         $maxFileAge = 5 * 3600; // Temp file age in seconds
@@ -288,5 +334,21 @@ class AJAXController extends BaseController
         die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
 
     } 
+
+    public function actionRemovePicture()
+    {
+        $rest = new RestServer();
+        $request = RestUtils::processRequest();
+        $required = array("pictureid");
+        $keys = array_keys($request);
+        if(count(array_intersect($required, $keys)) != count($required)) {
+            return RestUtils::sendResponse(308);
+        }
+        
+        $picture = new PictureObj($request["pictureid"]);
+        $picture->delete();
+        
+        return true;
+    }
     
 }

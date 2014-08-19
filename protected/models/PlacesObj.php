@@ -68,8 +68,11 @@ class PlacesObj extends FactoryObj
   {
 	if($this->placeid > 0) {
 		$this->load();
-		$this->load_metadata();
-		$this->metadata->save();
+		if(isset($this->metadata) and is_object($this->metadata)) {
+		  if(!$this->metadata->save()) {
+              $this->set_error($this->metadata->get_error());
+		  }
+        }
 	}
   }
 
