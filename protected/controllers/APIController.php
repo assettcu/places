@@ -47,7 +47,7 @@ class APIController extends BaseController
             <?php echo $image; ?>
             <span class="title" style="font-size:18px;"><?php echo $place->placename; ?></span><br/>
             <span class="description"><?php echo $place->description; ?></span>
-            <div style="margin-top:10px;"><a href="#">Get Directions To Here</a></div>
+            <div style="margin-top:10px;"><a href="https://www.google.com/maps/place/<?php echo str_replace(" ","+",$place->placename); ?>,+Boulder,+CO,+80310/@<?php echo @$place->metadata->data["latitude"]["value"].",".$place->metadata->data["longitude"]["value"]; ?>,18z" target="_blank">Get Directions To Here</a></div>
         </div>
         <?php
         $contents = ob_get_contents();

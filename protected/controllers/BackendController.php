@@ -60,12 +60,13 @@ class BackendController extends BaseController
             
             # If user submitted form...
             if(isset($_REQUEST["placeform-submitted"])) {
-                    
+                
                 # Set property values from form
                 $place->placename       = $_POST["placename"];
                 $place->placetypeid     = $_POST["placetypeid"];
                 $place->parentid        = $_POST["parentid"];
                 $place->description     = $_POST["description"];
+                $place->tags            = $_POST["tags"];
                 
                 # Save post
                 if(!$place->save()) {
@@ -73,51 +74,45 @@ class BackendController extends BaseController
                     throw new Exception($property->get_error());
                 }
                 $place->load();
+                $place->load_metadata();
+                $place->metadata->save();
                 
                 # Save the image files
                 $count = 0;
+                
+                $destdir = "/images/".$place->placetype->name."/".str_replace(" ","_",$place->placename)."/";
+                $actualdir = "C:\\web\\places.colorado.edu/images/".$place->placetype->name."/".str_replace(" ","_",$place->placename)."/";
+                
+                if(!is_dir($actualdir)) {
+                    @mkdir($actualdir);
+                }
+                
+                $scanned_dirs = scandir($actualdir);
+                
+                # Find the highest numbered image and increment by one
+                $counter = 0;
+                foreach($scanned_dirs as $index=>$file) {
+                    if($file == "." or $file == "..") {
+                        continue;
+                    }
+                    if(preg_match("/\_[0-9]+\./",$file,$matches)) {
+                        $counter = ($matches[0] > $counter) ? $matches[0] : $counter;
+                    }
+                }
+                $counter++;
+                
                 while(isset($_POST["html5_uploader_".$count."_tmpname"])) {
                     
                     # Load up local vars
                     $tempfile = getcwd()."/temp/".Yii::app()->user->name."/".$_POST["html5_uploader_".$count."_tmpname"];
-                    $destdir = "/images/".$place->placetype->name."/".str_replace(" ","_",$place->placename)."/";
-                    $actualdir = "C:\\web\\places.colorado.edu/images/".$place->placetype->name."/".str_replace(" ","_",$place->placename)."/";
                     $type = substr($_POST["html5_uploader_".$count."_tmpname"],-3,3);
-                    
-                    # Find the highest numbered image and increment by one
-                    $counter = 0;
-                    $scanned_dirs = scandir($actualdir);
-                    foreach($scanned_dirs as $index=>$file) {
-                        if($file == "." or $file == "..") {
-                            continue;
-                        }
-                        if(preg_match("/\_[0-9]+\./",$file,$matches)) {
-                            $counter = ($matches[0] > $counter) ? $matches[0] : $counter;
-                        }
-                    }
-                    $counter++;
                     
                     $filename = str_replace(" ","_",$place->placename)."_".$counter.".".$type;
                     $destfile = $destdir.$filename;
                     $actualfile = $actualdir.str_replace(" ","_",$place->placename)."_".$counter.".".$type;
                     
-                    /**
-                    $list = new WidgetList();
-                    $list->addListItem(
-                        array(
-                            "Temp File Exists" => (is_file($tempfile)) ? "TRUE" : "FALSE",
-                            "Temp File"     => $tempfile,
-                            "Dest Dir"      => $destdir,
-                            "Dest File"     => $destfile,
-                            "Actual Dir"    => $actualdir,
-                            "Actual File"   => $actualfile
-                        )
-                    );
-                    
-                    $list->render();
-                    die();
-                    **/
-                    
+                    $counter++;
+                
                     # Move the temp file into the proper folder
                     if(is_file($tempfile)) {
                         if(!is_dir($actualdir)) {
@@ -139,7 +134,7 @@ class BackendController extends BaseController
                     $picture->path = $destfile;
                     $picture->sorder = $count;
                     $picture->caption = $place->placename;
-                    $picture->description = $place->description;
+                    $picture->description = "";
                     $picture->type = $type;
                     $picture->who_uploaded = Yii::app()->user->name;
                     $picture->date_uploaded = date("Y-m-d H:i:s");
@@ -156,7 +151,7 @@ class BackendController extends BaseController
                     # Cron::run_cron();                   
                     # Success message and redirect!                   
                     Yii::app()->user->setFlash("success","Successfully added place.");
-                    $this->redirect(Yii::app()->createUrl('backend/new'));
+                    $this->redirect(Yii::app()->createUrl('backend/editplace')."?id=".$place->placename);
                     exit;
                 }
             }
@@ -166,8 +161,7 @@ class BackendController extends BaseController
         }
         
         $params["error"] = $error;
-        
-        
+        $params["place"] = $place;
         
         $this->render('new',$params);
     }
@@ -190,6 +184,11 @@ class BackendController extends BaseController
         }
         
         $place = new PlacesObj($_REQUEST['id']);
+        if(!$place->loaded) {
+            Flashes::create_flash("warning","This place does not exist.");
+            $this->redirect(Yii::app()->createUrl('backend/manageplaces'));
+            exit;
+        }
         $place->load_images();
         $place->load_parent();
         $place->load_metadata();
@@ -197,6 +196,7 @@ class BackendController extends BaseController
         
         if(isset($_REQUEST["editplace-form"])) {
             
+            $oldplacename = $place->placename;
             
             $place->placename = $_REQUEST["placename"];
             $place->description = $_REQUEST["description"];
@@ -217,25 +217,46 @@ class BackendController extends BaseController
         
             # Save the image files
             $count = 0;
+            
+            # Define destination and actual directories
+            $destdir = "/images/".$place->placetype->name."/".str_replace(" ","_",$place->placename)."/";
+            $actualdir = "C:\\web\\places.colorado.edu/images/".$place->placetype->name."/".str_replace(" ","_",$place->placename)."/";
+                
+            
+            if($oldplacename != $_POST["placename"] or (is_dir("C:\\web\\places.colorado.edu/images/".$place->placetype->name."/".str_replace(" ","_",$oldplacename))) and !is_dir($actualdir)) {
+                $imagecopy = false;
+                @rmdir($actualdir);
+                @rename("C:\\web\\places.colorado.edu/images/".$place->placetype->name."/".str_replace(" ","_",$oldplacename),$actualdir);
+                
+                $images = $place->load_images();
+                foreach($images as $image) {
+                    $image->path = preg_replace("/\/".str_replace(" ","_",$oldplacename)."\//","/".$place->placename."/",$image->path);
+                    $image->save();
+                }
+            }
+            else if(!is_dir($actualdir)) {
+                @mkdir($actualdir);
+            }
+            
+            # Find the highest numbered image and increment by one
+            $counter = 0;
+            $scanned_dirs = scandir($actualdir);
+            foreach($scanned_dirs as $index=>$file) {
+                if($file == "." or $file == "..") {
+                    continue;
+                }
+                if(preg_match("/(?<=\_)[0-9]+(?=\.)/",$file,$matches)) {
+                    $counter = ($matches[0] > $counter) ? $matches[0] : $counter;
+                }
+            }
+            
             while(isset($_POST["html5_uploader_".$count."_tmpname"])) {
                 
                 # Load up local vars
                 $tempfile = getcwd()."/temp/".Yii::app()->user->name."/".$_POST["html5_uploader_".$count."_tmpname"];
-                $destdir = "/images/".$place->placetype->name."/".str_replace(" ","_",$place->placename)."/";
-                $actualdir = "C:\\web\\places.colorado.edu/images/".$place->placetype->name."/".str_replace(" ","_",$place->placename)."/";
                 $type = substr($_POST["html5_uploader_".$count."_tmpname"],-3,3);
                 
-                # Find the highest numbered image and increment by one
-                $counter = 0;
-                $scanned_dirs = scandir($actualdir);
-                foreach($scanned_dirs as $index=>$file) {
-                    if($file == "." or $file == "..") {
-                        continue;
-                    }
-                    if(preg_match("/\_[0-9]+\./",$file,$matches)) {
-                        $counter = ($matches[0] > $counter) ? $matches[0] : $counter;
-                    }
-                }
+                # Increment the counter
                 $counter++;
                 
                 $filename = str_replace(" ","_",$place->placename)."_".$counter.".".$type;
@@ -280,7 +301,7 @@ class BackendController extends BaseController
                 $picture->path = $destfile;
                 $picture->sorder = $count;
                 $picture->caption = $place->placename;
-                $picture->description = $place->description;
+                $picture->description = "";
                 $picture->type = $type;
                 $picture->who_uploaded = Yii::app()->user->name;
                 $picture->date_uploaded = date("Y-m-d H:i:s");
@@ -290,6 +311,8 @@ class BackendController extends BaseController
                 }
                 $count++;
             }
+            $this->redirect(Yii::app()->createUrl('backend/editplace')."?id=".$place->placename);
+            exit;
         }
 
         $place->load_images();

@@ -351,4 +351,28 @@ class AJAXController extends BaseController
         return true;
     }
     
+    public function actionMakeCoverPhoto()
+    {
+        $rest = new RestServer();
+        $request = RestUtils::processRequest();
+        $required = array("pictureid");
+        $keys = array_keys($request);
+        if(count(array_intersect($required, $keys)) != count($required)) {
+            return RestUtils::sendResponse(308);
+        }
+        
+        $picture = new PictureObj($request["pictureid"]);
+        
+        Yii::app()->db->createCommand()
+            ->update("placepictures", array(
+                'coverphoto' => 0
+            ), 'placeid=:placeid', array(':placeid'=>$picture->placeid));
+            
+        Yii::app()->db->createCommand()
+            ->update("placepictures", array(
+                'coverphoto' => 1
+            ), 'pictureid=:pictureid', array(':pictureid'=>$picture->pictureid));
+        
+        return true;
+    }
 }

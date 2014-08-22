@@ -471,4 +471,5 @@ div#editplace-buttons div.button-container {
 }
 div#editplace-buttons.stuck {
 	width:1060px;
+	z-index:2;
 }

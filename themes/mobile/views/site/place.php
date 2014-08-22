@@ -123,12 +123,12 @@ function footer() {
           <div data-role="navbar">
             <ul>
               <?php if($place->placetype->singular != "Building" and $place->parentid != 0): ?>
-              <li><a href="<?php Yii::app()->createUrl('place'); ?>?id=<?php echo $place->parentid; ?>"><span class="icon icon-point-left"> </span> Back</a></li>
+              <li><a href="<?php Yii::app()->createUrl('place'); ?>?id=<?php echo $place->parentid; ?>" data-ajax='false'><span class="icon icon-point-left"> </span> Back</a></li>
               <?php endif; ?>
               <li><a href="#images" class="ui-btn-active ui-state-persist" data-transition="fade"><span class="icon icon-image2"> </span> <span class="nav-text">Images</span></a></li>
               <li><a href="#information" data-transition="fade"><span class="icon icon-office"> </span> <span class="nav-text"><?php echo $place->placetype->singular; ?> Info</span></a></li>
               <?php if($place->placetype->singular == "Building"): ?>
-              <li><a href="#rooms" data-transition="fade"><span class="icon icon-enter"> </span> <span class="nav-text">Rooms</a></span></li>
+              <li><a href="#spaces" data-transition="fade"><span class="icon icon-enter"> </span> <span class="nav-text">Spaces</a></span></li>
               <li><a href="#map" data-transition="fade"><span class="icon icon-map"> </span> <span class="nav-text">Map</span></a></li>
               <?php endif; ?>
               <li><a href="#classes" data-transition="fade"><span class="icon icon-list"> </span> <span class="nav-text">Classes</span></a></li>
@@ -166,15 +166,15 @@ function footer() {
           <div data-role="navbar">
             <ul>
               <?php if($place->placetype->singular != "Building" and $place->parentid != 0): ?>
-              <li><a href="<?php Yii::app()->createUrl('place'); ?>?id=<?php echo $place->parentid; ?>"><span class="icon icon-point-left"> </span> Back</a></li>
+              <li><a href="<?php Yii::app()->createUrl('place'); ?>?id=<?php echo $place->parentid; ?>" data-ajax='false'><span class="icon icon-point-left"> </span> Back</a></li>
               <?php endif; ?>
               <li><a href="#images" data-transition="fade"><span class="icon icon-image2"> </span> <span class="nav-text">Images</span></a></li>
               <li><a href="#information" class="ui-btn-active ui-state-persist" data-transition="fade"><span class="icon icon-office"> </span> <span class="nav-text"><?php echo $place->placetype->singular; ?> Info</span></a></li>
               <?php if($place->placetype->singular == "Building"): ?>
-              <li><a href="#rooms" data-transition="fade"><span class="icon icon-enter"> </span> <span class="nav-text">Rooms</a></span></li>
-              <li><a href="#anylink" data-transition="fade"><span class="icon icon-map"> </span> <span class="nav-text">Map</span></a></li>
+              <li><a href="#spaces" data-transition="fade"><span class="icon icon-enter"> </span> <span class="nav-text">Spaces</a></span></li>
+              <li><a href="#map" data-transition="fade"><span class="icon icon-map"> </span> <span class="nav-text">Map</span></a></li>
               <?php endif; ?>
-              <li><a href="#anylink" data-transition="fade"><span class="icon icon-list"> </span> <span class="nav-text">Classes</span></a></li>
+              <li><a href="#classes" data-transition="fade"><span class="icon icon-list"> </span> <span class="nav-text">Classes</span></a></li>
             </ul>
           </div>
         <a href="#" class="ui-btn ui-btn-right ui-btn-icon-right"><span class="icon icon-search"> </span> Search</a>
@@ -200,7 +200,7 @@ function footer() {
 </div>
 
 
-<div data-role="page" id="rooms" data-dom-cache="false">
+<div data-role="page" id="spaces" data-dom-cache="false">
     
     <div data-role="header" data-position="fixed">
         <a href="<?php echo Yii::app()->baseUrl; ?>" class="ui-btn ui-btn-left ui-btn-icon-left"><span class="icon icon-home"> </span> Home</a>
@@ -208,12 +208,12 @@ function footer() {
           <div data-role="navbar">
             <ul>
               <?php if($place->placetype->singular != "Building" and $place->parentid != 0): ?>
-              <li><a href="<?php Yii::app()->createUrl('place'); ?>?id=<?php echo $place->parentid; ?>"><span class="icon icon-point-left"> </span> Back</a></li>
+              <li><a href="<?php Yii::app()->createUrl('place'); ?>?id=<?php echo $place->parentid; ?>" data-ajax='false'><span class="icon icon-point-left"> </span> Back</a></li>
               <?php endif; ?>
               <li><a href="#images" data-transition="fade"><span class="icon icon-image2"> </span> <span class="nav-text">Images</span></a></li>
               <li><a href="#information" data-transition="fade"><span class="icon icon-office"> </span> <span class="nav-text"><?php echo $place->placetype->singular; ?> Info</span></a></li>
               <?php if($place->placetype->singular == "Building"): ?>
-              <li><a href="#rooms" class="ui-btn-active ui-state-persist" data-transition="fade"><span class="icon icon-enter"> </span> <span class="nav-text">Rooms</a></span></li>
+              <li><a href="#spaces" class="ui-btn-active ui-state-persist" data-transition="fade"><span class="icon icon-enter"> </span> <span class="nav-text">Spaces</a></span></li>
               <li><a href="#map" data-transition="fade"><span class="icon icon-map"> </span> <span class="nav-text">Map</span></a></li>
               <?php endif; ?>
               <li><a href="#classes" data-transition="fade"><span class="icon icon-list"> </span> <span class="nav-text">Classes</span></a></li>
@@ -237,7 +237,7 @@ function footer() {
                       $thumb = $image->get_thumb();
             ?>
             <li value="<?php echo $childplace->placeid;?>">
-                <a href="<?=Yii::app()->createUrl('place');?>?id=<?=$childplace->placeid;?>" data-transition="fade" >
+                <a href="<?=Yii::app()->createUrl('place');?>?id=<?=$childplace->placeid;?>" data-transition="fade" data-ajax="false">
                     <?php $childplace->render_first_image("auto","auto","thumb"); ?>
                     <?php echo $childplace->placename;?>
                     <div class="placetype"><?php echo $childplace->placetype->singular; ?></div>
@@ -247,6 +247,10 @@ function footer() {
                 </a>
             </li>
             <?php endforeach; ?>
+        <?php else: ?>
+            <li>
+                There are no spaces for this <?php echo $place->placetype->singular; ?> yet.
+            </li>
         <?php endif; ?>
         </ul>
     </div>
@@ -254,7 +258,7 @@ function footer() {
     <?php footer(); ?>
 </div>
 
-
+<?php if($place->placetype->machinecode == "building") : ?>
 <div data-role="page" id="map" data-dom-cache="false">
     
     <div data-role="header" data-position="fixed">
@@ -263,12 +267,12 @@ function footer() {
           <div data-role="navbar">
             <ul>
               <?php if($place->placetype->singular != "Building" and $place->parentid != 0): ?>
-              <li><a href="<?php Yii::app()->createUrl('place'); ?>?id=<?php echo $place->parentid; ?>"><span class="icon icon-point-left"> </span> Back</a></li>
+              <li><a href="<?php Yii::app()->createUrl('place'); ?>?id=<?php echo $place->parentid; ?>" data-ajax='false'><span class="icon icon-point-left"> </span> Back</a></li>
               <?php endif; ?>
               <li><a href="#images" data-transition="fade"><span class="icon icon-image2"> </span> <span class="nav-text">Images</span></a></li>
               <li><a href="#information" data-transition="fade"><span class="icon icon-office"> </span> <span class="nav-text"><?php echo $place->placetype->singular; ?> Info</span></a></li>
               <?php if($place->placetype->singular == "Building"): ?>
-              <li><a href="#rooms" data-transition="fade"><span class="icon icon-enter"> </span> <span class="nav-text">Rooms</a></span></li>
+              <li><a href="#spaces" data-transition="fade"><span class="icon icon-enter"> </span> <span class="nav-text">Spaces</a></span></li>
               <li><a href="#map" class="ui-btn-active ui-state-persist" data-transition="fade"><span class="icon icon-map"> </span> <span class="nav-text">Map</span></a></li>
               <?php endif; ?>
               <li><a href="#classes" data-transition="fade"><span class="icon icon-list"> </span> <span class="nav-text">Classes</span></a></li>
@@ -283,6 +287,7 @@ function footer() {
     
     <?php footer(); ?>
 </div>
+<?php endif; ?>
 
 <div data-role="page" id="classes" data-dom-cache="false">
     
@@ -292,12 +297,12 @@ function footer() {
           <div data-role="navbar">
             <ul>
               <?php if($place->placetype->singular != "Building" and $place->parentid != 0): ?>
-              <li><a href="<?php Yii::app()->createUrl('place'); ?>?id=<?php echo $place->parentid; ?>"><span class="icon icon-point-left"> </span> Back</a></li>
+              <li><a href="<?php Yii::app()->createUrl('place'); ?>?id=<?php echo $place->parentid; ?>" data-ajax='false'><span class="icon icon-point-left"> </span> Back</a></li>
               <?php endif; ?>
               <li><a href="#images" data-transition="fade"><span class="icon icon-image2"> </span> <span class="nav-text">Images</span></a></li>
               <li><a href="#information" data-transition="fade"><span class="icon icon-office"> </span> <span class="nav-text"><?php echo $place->placetype->singular; ?> Info</span></a></li>
               <?php if($place->placetype->singular == "Building"): ?>
-              <li><a href="#rooms" data-transition="fade"><span class="icon icon-enter"> </span> <span class="nav-text">Rooms</a></span></li>
+              <li><a href="#spaces" data-transition="fade"><span class="icon icon-enter"> </span> <span class="nav-text">Spaces</a></span></li>
               <li><a href="#map" data-transition="fade"><span class="icon icon-map"> </span> <span class="nav-text">Map</span></a></li>
               <?php endif; ?>
               <li><a href="#classes" class="ui-btn-active ui-state-persist" data-transition="fade"><span class="icon icon-list"> </span> <span class="nav-text">Classes</span></a></li>

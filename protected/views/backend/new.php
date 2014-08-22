@@ -113,6 +113,9 @@ jQuery(document).ready(function(){
                 
             uploader.start();
         }
+        else {
+            $("form#placeform").submit();
+        }
     });
     
     // Button to return home

@@ -112,7 +112,7 @@ class PlacesObj extends FactoryObj
       SELECT      pictureid
       FROM        {{placepictures}}
       WHERE       placeid = :placeid
-      ORDER BY    sorder ASC
+      ORDER BY    coverphoto DESC, sorder ASC
       LIMIT       1;
     ";
     $command = $conn->createCommand($query);
@@ -138,7 +138,7 @@ class PlacesObj extends FactoryObj
       SELECT      pictureid
       FROM        {{placepictures}}
       WHERE       placeid = :placeid
-      ORDER BY    sorder ASC;
+      ORDER BY    coverphoto DESC, sorder ASC;
     ";
     $command = $conn->createCommand($query);
     $command->bindParam(":placeid",$this->placeid);
@@ -363,6 +363,22 @@ class PlacesObj extends FactoryObj
             array(":metatype"=>$person,":metadata_machinecode"=>"metadata_".$this->placetype->machinecode)
         )
         ->queryScalar() !=0);
+  }
+  
+  public function has_location(){
+      if($this->placetype->machinecode != "building") {
+          return false;
+      }
+      return (Yii::app()->db->createCommand()
+        ->select("COUNT(*)")
+        ->from("metadata_building")
+        ->where("latitude != :latitude AND longitude != :longitude AND placeid = :placeid", array(
+            "longitude" => "0.000000",
+            "latitude" => "0.000000",
+            "placeid" => $this->placeid
+        ))
+        ->queryScalar() != 0
+     );
   }
   
 }

@@ -14,12 +14,17 @@ $flashes->render();
 $organized = array();
 foreach($places as $place) {
     $pictures = "";
+    $location = "";
     if(!$place->has_pictures()) {
         $pictures = "<span class='icon icon-eye-blocked'> </span>";
     }
-    echo "<div style='padding:5px;'><a href='".Yii::app()->createUrl('backend/editplace')."?id=".$place->placename."'>".$place->placename."</a> | <span class='small-text placetype-".$place->placetype->machinecode."'>(".$place->placetype->singular.")</span> ".$pictures." </div>";
+    if($place->has_location()) {
+        $location = "<span class='icon icon-location'> </span>";
+    }
+    echo "<div style='padding:5px;'><a href='".Yii::app()->createUrl('backend/editplace')."?id=".$place->placename."'>".$place->placename."</a> | <span class='small-text placetype-".$place->placetype->machinecode."'>(".$place->placetype->singular.")</span> ".$pictures." ".$location." </div>";
     $children = $place->get_children();
     foreach($children as $child) {
+        $pictures = "";
         if(!$child->has_pictures()) {
             $pictures = "<span class='icon icon-eye-blocked'> </span>";
         }

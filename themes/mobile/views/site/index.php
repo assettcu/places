@@ -10,7 +10,7 @@ $buildings = load_places("building");
     	<ul data-role="listview" data-filter="true" data-input="#myFilter">
     		<?php foreach($buildings as $building): ?>
     		<li value="<?=$building->placeid;?>">
-    			<a href="<?=Yii::app()->createUrl('place');?>?id=<?=$building->placeid;?>" data-transition="slide" >
+    			<a href="<?=Yii::app()->createUrl('place');?>?id=<?=$building->placeid;?>" data-transition="slide" data-ajax="false" >
     			    <?php $building->render_first_image("auto","auto","thumb"); ?>
     				<?php echo $building->placename;?>
     			</a>

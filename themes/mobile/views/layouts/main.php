@@ -56,7 +56,7 @@
             });
         });
         
-        jQuery("#images").bind("pageinit",function(event){
+        jQuery(document).on("pageinit","#images",function(event){
             // Slideshow 2
             jQuery("#slider2").responsiveSlides({
                 auto: false,
@@ -73,22 +73,24 @@
         });
         
         $(function(){
-            $('#map_canvas').gmap().bind('init', function() { 
-                // This URL won't work on your localhost, so you need to change it
-                // see http://en.wikipedia.org/wiki/Same_origin_policy
-                $.getJSON( '<?php echo Yii::app()->baseUrl; ?>/api/placemap?id=<?php echo @$_REQUEST["id"]; ?>', function(data) { 
-                    $.each( data.markers, function(i, marker) {
-                        $('#map_canvas').gmap('addMarker', { 
-                            'position': new google.maps.LatLng(marker.latitude, marker.longitude), 
-                            'bounds': true,
-                        }).click(function() {
+            if($('#map_canvas').length != 0) {
+                $('#map_canvas').gmap().bind('init', function() { 
+                    // This URL won't work on your localhost, so you need to change it
+                    // see http://en.wikipedia.org/wiki/Same_origin_policy
+                    $.getJSON( '<?php echo Yii::app()->baseUrl; ?>/api/placemap?id=<?php echo @$_REQUEST["id"]; ?>', function(data) { 
+                        $.each( data.markers, function(i, marker) {
+                            $('#map_canvas').gmap('addMarker', { 
+                                'position': new google.maps.LatLng(marker.latitude, marker.longitude), 
+                                'bounds': true,
+                            }).click(function() {
+                                $('#map_canvas').gmap('openInfoWindow', { 'content': marker.content }, this);
+                            });
+                            $('#map_canvas').gmap('option','zoom',18);
                             $('#map_canvas').gmap('openInfoWindow', { 'content': marker.content }, this);
                         });
-                        $('#map_canvas').gmap('option','zoom',18);
-                        $('#map_canvas').gmap('openInfoWindow', { 'content': marker.content }, this);
                     });
                 });
-            });
+            }
         });
         
         $(document).on("pagecreate","#classes",function(){

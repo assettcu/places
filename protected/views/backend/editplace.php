@@ -44,6 +44,7 @@ $flashes->render();
                     </div>
                 </td>
             </tr>
+            <?php if($place->has_parent()): ?>
             <tr>
                 <th>
                     <div>Parent Place</div>
@@ -55,6 +56,7 @@ $flashes->render();
                     </div>
                 </td>
             </tr>
+            <?php endif; ?>
             <tr>
                 <th>
                     <div>Place Type</div>
@@ -115,7 +117,14 @@ $flashes->render();
                     Place Metadata
                 </td>
             </tr>
-            <?php foreach($place->metadata->data as $index=>$metadata): ?>
+            <?php 
+            if($place->metadata->loaded === false) {
+                $metadata_ = new MetadataObj($place->placeid,"metadata_".$place->placetype->machinecode);
+            }
+            else {
+                $metadata_ = $place->metadata;
+            }
+            foreach($metadata_->data as $index=>$metadata): ?>
                 <?php if($metadata["display_name"] === false) continue; ?>
             <tr>
                 <th>
@@ -128,7 +137,7 @@ $flashes->render();
                         <?php if($metadata["inputtype"] == "textarea"): ?>
                         <textarea name="<?php echo $index; ?>" id="<?php echo $index; ?>" rows="6" cols="50"><?php echo $metadata["value"]; ?></textarea>
                         <?php elseif($metadata["inputtype"] == "text"): ?>
-                        <input type="text" name="<?php echo $index; ?>" id="<?php echo $index; ?>" value="<?php echo $metadata["value"]; ?>" />
+                        <input type="text" name="<?php echo $index; ?>" id="<?php echo $index; ?>" value='<?php echo $metadata["value"]; ?>' />
                         <?php endif; ?>
                         <?php if($metadata["metatype"] == "none"): ?>(<span class="date">hidden</span>)<?php endif; ?>
                     </div>
@@ -150,9 +159,20 @@ $flashes->render();
                     <div>Current Pictures</div>
                 </th>
                 <td>
-                    <ul class="rig columns-4">
+                    <ul class="rig columns-2">
                     <?php foreach($place->images as $picture): ?>
-                        <li style="cursor:default;"><?php $picture->render_boxfit("150","150"); ?><a href="remove" class="remove-picture" id="pictureid-<?php echo $picture->pictureid; ?>"><span class="icon icon-remove"> </span> remove</a></li>
+                        <li style="cursor:default;" id="pictureid-<?php echo $picture->pictureid; ?>">
+                            <?php $picture->render_boxfit("200","200"); ?><br/>
+                            <a href="remove" class="remove-picture">
+                                <span class="icon icon-remove"> </span> Remove this picture
+                            </a>
+                            <div <?php if($picture->coverphoto == 1) : ?>class="hide" <?php endif; ?>>
+                                <br/>
+                                <a href="#" class="coverphoto">
+                                    <span class="icon icon-image"> </span> Make this the cover
+                                </a>
+                            </div>
+                        </li>
                     <?php endforeach; ?>
                     </ul>
                 </td>
@@ -175,6 +195,11 @@ jQuery(document).ready(function($){
    $("button").button();
    $("button").click(function(){ return false; }); 
 
+    $("button#viewplace").click(function(){
+        window.open("<?php echo Yii::app()->createUrl('site/place'); ?>?id=<?php echo $place->placename; ?>");
+        return false;
+    });
+
     // Submit the new Property post
     $("button#saveplace").click(function(e){
         // Let's submit the form
@@ -192,6 +217,9 @@ jQuery(document).ready(function($){
                 
             uploader.start();
         }
+        else {
+            $("form#editplace").submit();
+        }
     });
     
    $("button#cancel").click(function(){
@@ -199,8 +227,22 @@ jQuery(document).ready(function($){
        return false;
    });
    
+   $("a.coverphoto").click(function(){
+       var $id = $(this).parent().parent().attr("id").replace("pictureid-","");
+       var $image = $(this).parent();
+       $.ajax({
+           url: "<?php echo Yii::app()->createUrl('ajax/makecoverphoto'); ?>",
+           data: "pictureid="+$id,
+           success: function() {
+             $("a.coverphoto").parent().show();
+             $image.fadeOut();
+           }
+       });
+       return false;
+   });
+   
     $("a.remove-picture").click(function(){
-       var $id = $(this).attr("id").replace("pictureid-","");
+       var $id = $(this).parent().attr("id").replace("pictureid-","");
        var $image = $(this).parent();
        $.ajax({
            url: "<?php echo Yii::app()->createUrl('ajax/removepicture'); ?>",

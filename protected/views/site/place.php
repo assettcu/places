@@ -113,6 +113,11 @@ foreach($childplaces as $childplace) {
     </div>
     <a name="home"></a>
     <div class="content">
+        <?php if(!empty($place->description)) : ?>
+        <div class="ui-widget-content ui-corner-all" style="padding:10px;">
+            <?php echo $place->description; ?>
+        </div>
+        <?php endif; ?>
         <div class="images" style="position:relative;">
             <img src="<?php echo WEB_LIBRARY_PATH; ?>images/loading-images.gif" class="loading-gif" alt="Please wait while images are being loaded."/>
             <div class="galleria">
@@ -251,7 +256,6 @@ foreach($childplaces as $childplace) {
         <h3 name="googlemap-header">Google Map</h2>
         
         <div class="calign">
-            <?php echo $place->metadata->data["googlemap"]["value"]; ?>
         </div>
         
         <br class="clear" />
