@@ -22,8 +22,8 @@ $places = load_places($type);
                 <img src="<?php echo $thumb; ?>" width="100%" height="100%" alt="" />
             </div>
             <div class="title"><?php echo $place->placename; ?></div>
-            <?php if(isset($place->description) and !empty($place->description)): ?>
-            <p><?php echo $place->description; ?></p>
+            <?php if(isset($place->shortdesc) and !empty($place->shortdesc)): ?>
+            <p><?php echo $place->shortdesc; ?></p>
             <?php endif; ?>
         </a>
     </li>
