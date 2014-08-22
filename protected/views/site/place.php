@@ -114,9 +114,9 @@ foreach($childplaces as $childplace) {
     <a name="home"></a>
     <div class="content">
         <?php if(!empty($place->description)) : ?>
-        <div class="ui-widget-content ui-corner-all" style="padding:10px;">
+        <div class="ui-widget-content ui-corner-all" style="padding:10px;font-size:13px;width:780px;">
             <?php echo $place->description; ?>
-        </div>
+        </div><br/>
         <?php endif; ?>
         <div class="images" style="position:relative;">
             <img src="<?php echo WEB_LIBRARY_PATH; ?>images/loading-images.gif" class="loading-gif" alt="Please wait while images are being loaded."/>
@@ -256,6 +256,32 @@ foreach($childplaces as $childplace) {
         <h3 name="googlemap-header">Google Map</h2>
         
         <div class="calign">
+            <div id="map_canvas" style="height:400px;width:auto;"></div>
+            <script>
+            jQuery(document).ready(function($){
+                $(function(){
+                    if($('#map_canvas').length != 0) {
+                        $('#map_canvas').gmap().bind('init', function() { 
+                            // This URL won't work on your localhost, so you need to change it
+                            // see http://en.wikipedia.org/wiki/Same_origin_policy
+                            $.getJSON( '<?php echo Yii::app()->baseUrl; ?>/api/placemap?id=<?php echo @$_REQUEST["id"]; ?>', function(data) { 
+                                $.each( data.markers, function(i, marker) {
+                                    $('#map_canvas').gmap('addMarker', { 
+                                        'position': new google.maps.LatLng(marker.latitude, marker.longitude), 
+                                        'bounds': true,
+                                    }).click(function() {
+                                        $('#map_canvas').gmap('openInfoWindow', { 'content': marker.content }, this);
+                                    });
+                                    $('#map_canvas').gmap('option','zoom',18);
+                                    $('#map_canvas').gmap('openInfoWindow', { 'content': marker.content }, this);
+                                });
+                            });
+                        });
+                    }
+                });
+                
+            });
+            </script>
         </div>
         
         <br class="clear" />
