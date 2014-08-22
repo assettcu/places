@@ -66,7 +66,7 @@ function footer() {
 <div data-role="footer">
     <p class="footer">
         Developed by <a href="http//assett.colorado.edu">ASSETT</a> | Copyright &copy; <?php echo date("Y"); ?><br/>
-        All Rights Reserved | <a href="http//colorado.edu">University of Colorado Boulder</a> | <a href="#">Full Site</a>
+        All Rights Reserved | <a href="http//colorado.edu">University of Colorado Boulder</a> | <a href="<?php Yii::app()->createUrl('site/ToStandard'); ?>">Full Site</a>
     </p>
 </div>
 <?php

@@ -70,7 +70,7 @@ class SiteController extends Controller
     
 	public function beforeAction($action)
 	{
-		if($this->getIsMobile()) {
+		if($this->getIsMobile() and (Yii::app()->user->getState('mobile'))) {
 			Yii::app()->theme = 'mobile';
 		}
 		return $action;
