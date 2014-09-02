@@ -1,3 +1,35 @@
 table tbody tr.odd td {
 	background-color:#f0f0f0;
 }
+
+/* Navbar button size adjustments */
+.ui-navbar li .ui-link.ui-btn {
+    padding: 12 px 10px;
+    font-size: 1em;
+} 
+
+.ui-header .ui-btn-left.ui-btn, 
+.ui-header .ui-btn-right.ui-btn {
+	font-size: 1em;
+}
+
+.ui-header .ui-title {
+	line-height: 1.9em;
+}
+
+.centered-btns_tabs li a {
+	width: 2em;
+	height: 1.2em;
+}
+
+.centered-btns_tabs {
+	-webkit-padding-start: 0px;
+}
+
+p.footer {
+	font-size: 0.7em;
+}
+
+.ui-listview>.ui-li-has-thumb>.ui-btn {
+	line-height: 3.625em;
+}
