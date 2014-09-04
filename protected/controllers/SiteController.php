@@ -70,9 +70,9 @@ class SiteController extends Controller
     
 	public function beforeAction($action)
 	{
-		if($this->getIsMobile() and (Yii::app()->user->getState('mobile'))) {
-			Yii::app()->theme = 'mobile';
-		}
+        if(($this->getIsMobile() and is_null(Yii::app()->user->getState('mobile'))) or (Yii::app()->user->getState('mobile') === TRUE)) {
+            Yii::app()->theme = 'mobile';
+        }
 		return $action;
 	}
 
@@ -120,7 +120,7 @@ class SiteController extends Controller
 	public function actionToStandard()
 	{
 		Yii::app()->user->setState("mobile",false);
-		$this->redirect(Yii::app()->createUrl("index"));
+		$this->redirect(Yii::app()->baseUrl);
 		exit;
 	}
 	
