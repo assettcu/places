@@ -68,34 +68,35 @@ $theme = "bluebird";
 </head>
 
 <body>
+    <div class="wrapper">
+        <div class="container" id="page">
+            <div id="header">
+                <div class="logo">
+                    <a href="<?=Yii::app()->createUrl('index');?>">
+                        <img src="<?php echo StdLib::load_image_source("university_of_colorado_places_white"); ?>" alt="University of Colorado - Places" />
+                    </a>
+                </div>
+                <?php if(Yii::app()->controller->action->id == "place"): ?>
+                    <div class="search sticky" sticky="150">
+                    <?php else: ?>
+                        <div class="search">
+                        <?php endif; ?>
+                        <form method="get" action="<?php echo Yii::app()->createUrl('site/search'); ?>" id="searchform">
+                            <label for="searchbar" class="hide">Search Places</label>
+                            <input type="text" id="searchbar" name="q" value="<?php echo @$_REQUEST["q"]; ?>" />
+                            <a href="#" onclick="javascript:document.forms[0].submit();" id="search" class="button grey">Search</a>
+                            <div id="search-hint" style="text-align:left;"><span class="icon icon-info"> </span>Search for buildings, classrooms, or classes. </div>
+                        </form>
+                    </div>
+                </div>
+                <br class="clear" />
 
-<div class="container" id="page">
-    <div id="header">
-        <div class="logo">
-            <a href="<?=Yii::app()->createUrl('index');?>">
-                <img src="<?php echo StdLib::load_image_source("university_of_colorado_places_white"); ?>" alt="University of Colorado - Places" />
-            </a>
-        </div>
-        <?php if(Yii::app()->controller->action->id == "place"): ?>
-        <div class="search sticky" sticky="150">
-        <?php else: ?>
-        <div class="search">
-        <?php endif; ?>
-            <form method="get" action="<?php echo Yii::app()->createUrl('site/search'); ?>" id="searchform">
-                <label for="searchbar" class="hide">Search Places</label>
-                <input type="text" id="searchbar" name="q" value="<?php echo @$_REQUEST["q"]; ?>" />
-                <a href="#" onclick="javascript:document.forms[0].submit();" id="search" class="button grey">Search</a>
-                <div id="search-hint" style="text-align:left;"><span class="icon icon-info"> </span>Search for buildings, classrooms, or classes. </div>
-            </form>
-        </div>
+                <?php echo $content; ?>
+
+            <div class="clear"></div>
+            <div class="push"></div>
+        </div><!-- page -->
     </div>
-    <br class="clear" />
-
-    <?php echo $content; ?>
-
-    <div class="clear"></div>
-
-</div><!-- page -->
 
     <div id="footer">
         <div class="left-footer">Developed by <a href="http//assett.colorado.edu">ASSETT</a>.<?php if(!Yii::app()->user->isGuest): ?> | <a href="<?php echo Yii::app()->createUrl('backend/index'); ?>">Backend</a><?php endif; ?></div>

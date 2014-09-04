@@ -1,4 +1,23 @@
 /** Main Body Stuff **/
+
+/* Sticky Footer Code */
+* {
+	margin: 0;
+}
+html, body {
+	height: 100%;
+}
+.wrapper {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -40px; /* the bottom margin is the negative value of the footer's height */
+}
+#footer, .push {
+	height: 40px; /* .push must be the same height as #footer */
+}
+/* End Sticky Footer Code */
+
 body
 {
 	background: #fefefe;
@@ -11,7 +30,7 @@ body
 	margin:10px auto;
 	padding:0 1em;
 	max-width: 66.25em;		 /* 1060px / 16px = 66.25em */
-	margin-bottom:120px;
+	/*margin-bottom:120px;*/
 }
 
 .cu-header{
@@ -98,19 +117,12 @@ body
 }
 /** Footer **/
 #footer {
+	min-width: 1067px;
 	font-size:0.75em; /* 12px / 16px = 0.8125 */
-	padding:1em; /* 7px / 12px = 0.5833 */
-	width: 100%; /* 1060px / 12px - (2 * 0.5833) = 87.167*/
-	border:2px solid #999;
+	border-top:2px solid #CCC;
 	border-bottom:none;
-	border-top-left-radius:3px;
-	border-top-right-radius:3px;
-	position:fixed;
-	bottom:0;
-	margin: 10px auto 0px auto;
-	background-color:#f0f0f0;
+	background-color:#EEE;
 	color:#333;
-	z-index:5;
 }
 
 #footer a {
@@ -125,21 +137,21 @@ body
 #footer div.left-footer {
 	float:left;
 	width:20em; /* 1060px / 4 / 12px  - (2 * 0.5833) = 20.917 */
-	margin-right:1em;
+	margin: 1em;
 }
 
 #footer div.mid-footer {
 	text-align:center;	
 	width:42em; /* 1060px / 2 / 12px  - (2 * 0.5833) = 43 */
 	margin: 0 auto;
+	margin-top: 1em;
 }
 
 #footer div.right-footer {
 	float:right;
 	width:19.917em; /* 1060px / 4 / 12px  - (2 * 0.5833) = 20.917 */
-	margin-left:1em;
 	text-align:right;
-	padding-right: 2em;
+	margin: 1em;
 }
 #footer div.footer-culink {
 	display:inline-block;
