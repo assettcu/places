@@ -74,46 +74,6 @@ function footer() {
     return $contents;
 }
 ?>
-<style type="text/css">
-    div.gallery-row:after { clear: both; content: "."; display: block; height: 0; visibility: hidden; }
-    div.gallery-item { float: left; width: 33%; }
-    div.gallery-item a { display: block; margin: 5px; border: 1px solid #3c3c3c; }
-    div.gallery-item img { display: block; width: 100%; height: auto;}
-    #Gallery1 .ui-content, #Gallery2 .ui-content { overflow: hidden; }
-    #Header { background: #EEBF02; height: 61px; padding: 0; border-bottom: 1px solid #3c3c3c;  }
-    #Header img { display: block; margin: 0 auto 0; }
-    
-    #MainContent { background: #ffffff; padding-bottom: 30px; }
-    
-    #Footer { padding: 10px; border-top: none; } 
-    
-    div.label {
-        background-color:#d0d0d0;
-        padding:5px;
-        border-right:2px solid #fff;
-        text-align:center;
-    }
-    div.value {
-        text-align:center;
-        word-wrap:break-word;
-    }
-    div.placetype {
-        font-weight:normal;
-        font-style:italic;
-    }
-    p.footer {
-        font-size:.9em;
-        text-align:center;
-    }
-    #slider2 {
-        width:100%;
-    }
-    #slider2 li a img {
-        width:auto;
-        margin:0 auto;
-        float:none;
-    }
-</style>
 
 <div data-role="page" id="images" data-dom-cache="false">
     
@@ -134,7 +94,7 @@ function footer() {
               <li><a href="#classes" data-transition="fade"><span class="icon icon-list"> </span> <span class="nav-text">Classes</span></a></li>
             </ul>
           </div>
-        <a href="#" class="ui-btn ui-btn-right ui-btn-icon-right"><span class="icon icon-search"> </span> Search</a>
+        <a href="<?=Yii::app()->baseUrl;?>/search" class="ui-btn ui-btn-right ui-btn-icon-right"><span class="icon icon-search"> </span> Search</a>
     </div>
     
     <ul class="rslides centered-btns" id="slider2">

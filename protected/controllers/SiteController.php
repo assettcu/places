@@ -154,19 +154,24 @@ class SiteController extends Controller
     
 	public function actionSearch()
 	{
-	    # Query for the places from the search (models/Functions)
-        $places_return = search($_REQUEST["q"]);
-        extract($places_return); # $places (obj), $search_type (string)
-        
-        # Save the search to the DB
-        $search             = new SearchObj();
-        $search->search     = $_REQUEST["q"];
-        $search->ipaddress  = $_SERVER["REMOTE_ADDR"];
-        // $search->results    = json_encode($places);
-        $search->numresults = count($places);
-        $search->save();
-        
-		$this->render('search',array("places"=>$places,"search_type"=>$search_type));
+        if(isset($_REQUEST["q"]) && !empty($_REQUEST["q"])){
+    	    # Query for the places from the search (models/Functions)
+            $places_return = search($_REQUEST["q"]);
+            extract($places_return); # $places (obj), $search_type (string)
+            
+            # Save the search to the DB
+            $search             = new SearchObj();
+            $search->search     = $_REQUEST["q"];
+            $search->ipaddress  = $_SERVER["REMOTE_ADDR"];
+            // $search->results    = json_encode($places);
+            $search->numresults = count($places);
+            $search->save();
+            
+    		$this->render('search',array("places"=>$places,"search_type"=>$search_type));
+        }
+        else {
+            $this->render('search');
+        }
 	}
 	
     /**

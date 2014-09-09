@@ -1,5 +1,8 @@
 <h1>Search for Places</h1>
 
+
+<!-- If the user performed a search, show them the results -->
+<?php if(isset($_REQUEST["q"]) && !empty($_REQUEST["q"])) : ?>
 <div class="search-query">
 	You searched for &quot;<span class="text-blue" id="query"><?=$_REQUEST["q"];?></span>&quot;. Found <span class="text-orange" id="count"><input type="hidden" name="count-field" id="count-field" value="<?php echo count($places); ?>" /><?php echo count($places);?></span> results.
 </div>
@@ -36,6 +39,12 @@
     </li>
     <?php endforeach; ?>
 </ul>
+
+<!-- If the user performed a search without entering a search query show them -->
+<? else : ?>
+<span class="text-blue" id="query">Please enter a search query</span>
+
+<? endif; ?>
 
 <script>
 jQuery(document).ready(function() {
