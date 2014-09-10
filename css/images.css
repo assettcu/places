@@ -13,7 +13,7 @@ ul.rig li {
 	padding: 10px;
 	margin: 0 0 2.5% 2.5%;
 	background: #fff;
-	background:rgba(255,255,255,0.8);
+	background:rgb(255,255,255);
 	border:1px solid #ddd;
 	font-size: 1em;
 	vertical-align: top;
@@ -55,20 +55,25 @@ ul.rig li p {
 	color: #999;
 }
 
-ul.rig li div.placetype-building {
+.placetype-building {
 	font-size: 0.9em;
 	color: #950;
 	font-style:italic;
 }
 
-ul.rig li div.placetype-classroom {
+.placetype-classroom {
 	font-size: 0.9em;
 	color: #059;
 	font-style:italic;
 }
-ul.rig li div.placetype-lab {
+.placetype-lab {
 	font-size: 0.9em;
 	color: #006f3d;
+	font-style:italic;
+}
+.placetype-commonarea {
+	font-size: 0.9em;
+	color: #990000;
 	font-style:italic;
 }
 

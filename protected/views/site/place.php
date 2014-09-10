@@ -34,7 +34,7 @@ $place->load_metadata();
 # Load classes for a building
 if($place->placetype->machinecode == "building") {
     $classes = StdLib::external_call(
-        "http://assettdev.colorado.edu/ascore/api/buildingclasses",
+        "http://compass.colorado.edu/ascore/api/buildingclasses",
         array(
             "building"  => $place->metadata->data["building_code"]["value"],
             "term"      => $yt, # Semester/Year to lookup
@@ -47,7 +47,7 @@ else if($place->placetype->machinecode == "classroom") {
     $parent->load_metadata();
     $building_code = $parent->metadata->data["building_code"]["value"];
     $classes = StdLib::external_call(
-        "http://assettdev.colorado.edu/ascore/api/classroomclasses",
+        "http://compass.colorado.edu/ascore/api/classroomclasses",
         array(
             "building"  => $building_code,
             "classroom" => $place->placename,
@@ -61,7 +61,7 @@ else {
 }
 
 $yearterms = StdLib::external_call(
-    "http://assettdev.colorado.edu/ascore/api/uniqueyearterms"
+    "http://compass.colorado.edu/ascore/api/uniqueyearterms"
 );
 
 # Load children places
@@ -79,51 +79,55 @@ foreach($childplaces as $childplace) {
     
     <ul id="breadcrumb" class="sticky" sticky="150">
       <li><a href="<?php echo Yii::app()->createUrl('index'); ?>"><span class="icon icon-home"> </span> Home</a></li>
-      <?php if($place->placetype->machinecode == "classroom"): ?>
-      <li>
-          <a href="<?php echo Yii::app()->createUrl('place'); ?>?id=<?php echo $place->get_parent()->placename; ?>">
-            <span class="icon icon-office"> </span> 
-            <?php echo $place->get_parent()->placename; ?>
-          </a>
-      </li>
-      <li><a href="#" onclick="javascript:return false;"><span class="icon icon-books"> </span> <?php echo $place->placename; ?></a></li>
-      <?php elseif($place->placetype->machinecode == "lab"): ?>
-      <li>
-          <a href="<?php echo Yii::app()->createUrl('place'); ?>?id=<?php echo $place->get_parent()->placename; ?>">
-            <span class="icon icon-office"> </span> 
-            <?php echo $place->get_parent()->placename; ?>
-          </a>
-      </li>
-      <li><a href="#" onclick="javascript:return false;"><span class="icon icon-lab"> </span> <?php echo $place->placename; ?></a></li>
-      <?php else: ?>
-      <li><a href="#" onclick="javascript:return false;"><span class="icon icon-office"> </span> <?php echo $place->placename; ?></a></li>
+      <?php if($place->has_parent()): ?>
+          <?php function make_breadcrumb($place) { ?>
+              <?php 
+              if($place->get_parent()->placetype->machinecode == "place") return; 
+              if($place->get_parent()->has_parent()) make_breadcrumb($place->get_parent()); 
+              ?>
+          <li>
+              <a href="<?php echo Yii::app()->createUrl('place'); ?>?id=<?php echo $place->get_parent()->placename; ?>">
+                <span class="icon <?php echo $place->get_parent()->placetype->icon; ?>"> </span> 
+                <?php echo $place->get_parent()->placename; ?>
+              </a>
+          </li>
+         <?php } make_breadcrumb($place); ?>
       <?php endif; ?>
+      <li><a href="#" onclick="javascript:return false;"><span class="icon <?php echo $place->placetype->icon; ?>"> </span> <?php echo $place->placename; ?></a></li>
     </ul>
     
-    <h2><?php echo $place->placename; ?></h2>
+    <h2><?php echo $place->placename; ?><?php if(!Yii::app()->user->isGuest): ?> (<a href="<?php echo Yii::app()->createUrl('backend/editplace'); ?>?id=<?php echo $place->placename; ?>">edit</a>)<?php endif; ?></h2>
     <div class="nav sticky" sticky="150">
         <ul>
             <li><div id="menu-placename"><?php echo $place->placename; ?></div></li>
             <li><a href="#home" onclick="javascript:return false;">Images <span class="icon icon-image2"> </span></a></li>
-            <li><a href="#relevant-info" onclick="javascript:return false;"><?php echo $place->placetype->singular; ?> Info <span class="icon icon-office"> </span></a></li>
+            <li><a href="#relevant-info" onclick="javascript:return false;"><?php echo $place->placetype->singular; ?> Info <span class="icon <?php echo $place->placetype->icon; ?>"> </span></a></li>
             <?php if($place->placetype->machinecode == "building"): ?>
-            <li><a href="#roomuniquename" onclick="javascript:return false;">Rooms <span class="icon icon-enter"> </span></a></li>
+            <li><a href="#spaces" onclick="javascript:return false;">Spaces <span class="icon icon-enter"> </span></a></li>
             <li><a href="#googlemap" onclick="javascript:return false;">Google Map <span class="icon icon-map"> </span></a></li>
             <?php endif; ?>
+            <?php if($place->placetype->machinecode != "commonarea"): ?>
             <li><a href="#buildingclasses" onclick="javascript:return false;">Classes <span class="icon icon-list"> </span></a></li>
+            <?php endif; ?>
         </ul>
     </div>
     <a name="home"></a>
     <div class="content">
+        <?php if(!empty($place->description)) : ?>
+        <div class="ui-widget-content ui-corner-all" style="padding:10px;font-size:13px;width:780px;">
+            <?php echo $place->description; ?>
+        </div><br/>
+        <?php endif; ?>
         <div class="images" style="position:relative;">
-            <img src="<?php echo WEB_LIBRARY_PATH; ?>images/loading-images.gif" class="loading-gif"/>
+            <img src="<?php echo WEB_LIBRARY_PATH; ?>images/loading-images.gif" class="loading-gif" alt="Please wait while images are being loaded."/>
             <div class="galleria">
                 <?php 
                 if($place->has_pictures()) {
                     $pictures = $place->load_images();
                     foreach($pictures as $picture) {
-                        if(!$picture->loaded) continue;
+                        if(!$picture->loaded or $picture->hidden == 1) continue;
                         echo "<a href='".$picture->load_image_href()."'>";
+                        $picture->attributes["alt"] = $picture->description;
                         $picture->render_thumb();
                         echo "</a>";
                     }
@@ -135,6 +139,31 @@ foreach($childplaces as $childplace) {
                 ?>
             </div>
             <br class="clear" />
+            <?php if(!empty($place->tags)): ?>
+            <style>
+            div.tags {
+                font-size:0.8em;
+            }
+            span.tag a {
+                font-style:italic;
+                color:#999;
+                text-decoration:none;
+            }
+            span.tag a:hover {
+                color:#FF9900;
+            }
+            </style>
+            <div class="tags">
+                Tags: 
+                <?php
+                $tags = explode(",",$place->tags); 
+                foreach($tags as $tag) {
+                    $outputtags[] = "<span class=\"tag\"><a href=\"".Yii::app()->createUrl('search')."?q=".strtolower($tag)."\">".strtolower($tag)."</a></span>";
+                }
+                echo implode(", ",$outputtags);
+                ?>
+            </div>
+            <?php endif; ?>
         </div>
         
         <br class="clear" />
@@ -142,10 +171,19 @@ foreach($childplaces as $childplace) {
         <a name="relevant-info"></a>
         <h3 name="relevant-info-header"><?php echo $place->placetype->singular; ?> Information</h3>
         <div class="meta">
-            <div class="metachoice">
+            <div class="metachoice building-info">
+                <span class="help-field">Show Information For</span>: 
                 <a href="#" class="ri selected" onclick="javascript:return false;">All</a> |
+                <?php if($place->has_metadata_for("students")): ?>
                 <a href="#" class="ri" onclick="javascript:return false;">Students</a> |
+                <?php else: ?>
+                <span style="cursor:default;padding:2px 7px;">Students</span> |
+                <?php endif; ?>
+                <?php if($place->has_metadata_for("teachers")): ?>
                 <a href="#" class="ri" onclick="javascript:return false;">Teachers</a>
+                <?php else: ?>
+                <span style="cursor:default;padding:2px 7px;">Teachers</span>
+                <?php endif; ?>
             </div>
             <ul id="ri-list">
                 <?php foreach($place->metadata->data as $index=>$data): ?>
@@ -162,10 +200,30 @@ foreach($childplaces as $childplace) {
         <br class="clear" />
         <br class="clear" />
         <?php if($place->placetype->machinecode == "building"): ?>
-        <a name="roomuniquename"></a>
-        <h3 name="roomuniquename-header">Rooms in this <?php echo $place->placetype->singular; ?></h2>
+        <a name="spaces"></a>
+        <h3 name="spaces-header">Spaces in this <?php echo $place->placetype->singular; ?></h2>
         
-        <ul class="rig columns-4">
+        <div class="metachoice spaces">
+            <span class="help-field">Show Only These Spaces</span>: 
+            <a href="#" class="ri selected" onclick="javascript:return false;">All</a> |
+            <?php if($place->has_space("classroom")): ?>
+            <a href="#" class="ri" onclick="javascript:return false;">Classrooms</a> |
+            <?php else: ?>
+            <span style="cursor:default;padding:2px 7px;">Classrooms</span> |
+            <?php endif; ?>
+            <?php if($place->has_space("lab")): ?>
+            <a href="#" class="ri" onclick="javascript:return false;">Labs</a> |
+            <?php else: ?>
+            <span style="cursor:default;padding:2px 7px;">Labs</span> |
+            <?php endif; ?>
+            <?php if($place->has_space("commonarea")): ?>
+            <a href="#" class="ri" onclick="javascript:return false;">Common Areas</a>
+            <?php else: ?>
+            <span style="cursor:default;padding:2px 7px;">Common Areas</span>
+            <?php endif; ?>
+        </div>
+        
+        <ul class="rig columns-4" id="spaces-container">
         <?php if(!empty($childplaces)):  ?>
             <?php foreach($childplaces as $childplace):
                       $childplace_names[] = $childplace->placename;
@@ -178,7 +236,7 @@ foreach($childplaces as $childplace) {
                       }
                       $thumb = $image->get_thumb();
             ?>
-            <li>
+            <li class="<?php echo $childplace->placetype->machinecode; ?>">
                 <a href="<?php echo Yii::app()->createUrl('place'); ?>?id=<?php echo $childplace->placename; ?>">
                     <div class="image-container">
                         <img src="<?php echo $thumb; ?>" width="100%" height="100%" alt="<?php echo $childplace->placename; ?>" />
@@ -198,12 +256,38 @@ foreach($childplaces as $childplace) {
         <h3 name="googlemap-header">Google Map</h2>
         
         <div class="calign">
-            <?php echo $place->metadata->data["googlemap"]["value"]; ?>
+            <div id="map_canvas" style="height:400px;width:auto;"></div>
+            <script>
+            jQuery(document).ready(function($){
+                $(function(){
+                    if($('#map_canvas').length != 0) {
+                        $('#map_canvas').gmap().bind('init', function() { 
+                            // This URL won't work on your localhost, so you need to change it
+                            // see http://en.wikipedia.org/wiki/Same_origin_policy
+                            $.getJSON( '<?php echo Yii::app()->baseUrl; ?>/api/placemap?id=<?php echo @$_REQUEST["id"]; ?>', function(data) { 
+                                $.each( data.markers, function(i, marker) {
+                                    $('#map_canvas').gmap('addMarker', { 
+                                        'position': new google.maps.LatLng(marker.latitude, marker.longitude), 
+                                        'bounds': true,
+                                    }).click(function() {
+                                        $('#map_canvas').gmap('openInfoWindow', { 'content': marker.content }, this);
+                                    });
+                                    $('#map_canvas').gmap('option','zoom',18);
+                                    $('#map_canvas').gmap('openInfoWindow', { 'content': marker.content }, this);
+                                });
+                            });
+                        });
+                    }
+                });
+                
+            });
+            </script>
         </div>
         
         <br class="clear" />
         <?php endif; ?>
         
+        <?php if($place->placetype->machinecode != "commonarea"): ?>
         <a name="yt"></a>
         <a name="buildingclasses"></a>
         <h3 name="buildingclasses-header">Classes in this <?php echo $place->placetype->singular; ?></h2>
@@ -238,7 +322,7 @@ foreach($childplaces as $childplace) {
                     <th class="calign">Times</th>
                 </tr>
             </thead>
-            <?php $count=0; foreach($classes as $class): $count++; ?>
+            <?php if(!empty($classes)): $count=0; foreach($classes as $class): $count++; ?>
                 <?php
                 # Do some processing before displaying
                 $starttime  = $class["timestart"];
@@ -278,12 +362,11 @@ foreach($childplaces as $childplace) {
                 <td class="calign"><?php echo $class["meetingdays"]; ?></td>
                 <td class="calign"><?php echo @$starttime." - ".@$endtime; ?></td>
             </tr>
-            <?php endforeach; ?>
+            <?php endforeach; endif; ?>
         </table>
+        <?php endif; ?>
     </div>
 </div>
-
-<script src="<?php echo WEB_LIBRARY_PATH; ?>jquery/modules/galleria/galleria-1.3.6.min.js"></script>
 
 
 <script>
@@ -341,9 +424,9 @@ jQuery(document).ready(function($){
         }
     });
     
-    $("a.ri").click(function(){
+    $("div.building-info a.ri").click(function(){
        var $val = $(this).text();
-       $("a.ri").removeClass("selected");
+       $("div.building-info a.ri").removeClass("selected");
        $(this).addClass("selected");
        if($val == "All") {
            $("ul#ri-list li:hidden").each(function(){
@@ -363,6 +446,32 @@ jQuery(document).ready(function($){
     });
     
     
+    $("div.spaces a.ri").click(function(){
+       var $val = $(this).text();
+       $("div.spaces a.ri").removeClass("selected");
+       $(this).addClass("selected");
+       if($val == "All") {
+           $("#spaces-container li:hidden").each(function(){
+              $(this).stop().show('fade'); 
+           });
+       } 
+       else if($val=="Classrooms") {
+           $("#spaces-container li.classroom:hidden").stop().show('fade');
+           $("#spaces-container li.lab:visible").stop().hide('fade');
+           $("#spaces-container li.commonarea:visible").stop().hide('fade');
+       }
+       else if($val=="Labs") {
+           $("#spaces-container li.lab:hidden").stop().show('fade');
+           $("#spaces-container li.classroom:visible").stop().hide('fade');
+           $("#spaces-container li.commonarea:visible").stop().hide('fade');
+       }
+       else if($val=="Common Areas") {
+           $("#spaces-container li.commonarea:hidden").stop().show('fade');
+           $("#spaces-container li.lab:visible").stop().hide('fade');
+           $("#spaces-container li.classroom:visible").stop().hide('fade');
+       }
+    });
+    
    $("ul.rig li").hover(
        function(){
            $(this).fadeTo("fast",1);
@@ -372,6 +481,7 @@ jQuery(document).ready(function($){
        }
    );
 });
+
 function init()
 {
     Galleria.loadTheme('<?php echo WEB_LIBRARY_PATH; ?>jquery/modules/galleria/themes/classic/galleria.classic.min.js');
@@ -380,6 +490,7 @@ function init()
         'imageCrop': 'landscape',
         'imagePosition': 'center center',
         'lightbox': true,
+        'transition': 'fade'
     });
     Galleria.on("loadfinish",function(e){
         $("div.galleria").css("visibility","visible");

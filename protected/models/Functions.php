@@ -90,7 +90,7 @@ function search($search)
                 break;
             }
         }
-        $query[] = "(parentid = (SELECT placeid FROM {{places}} WHERE placename LIKE '%$param%' LIMIT 1) OR placename LIKE '%$param%')";
+        $query[] = "(parentid = (SELECT placeid FROM {{places}} WHERE placename LIKE '%$param%' LIMIT 1) OR placename LIKE '%$param%' OR tags LIKE '%$param%')";
     }
 
     $q = implode(" AND ", $query);
@@ -131,7 +131,7 @@ function search_classes($search)
 {
     # Load classes for a building
     $classes = StdLib::external_call(
-        "http://assettdev.colorado.edu/ascore/api/searchclasses",
+        "http://compass.colorado.edu/ascore/api/searchclasses",
         array(
             "search"  => $search,
         )

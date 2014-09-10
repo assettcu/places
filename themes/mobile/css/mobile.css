@@ -1,0 +1,30 @@
+div.gallery-row:after { clear: both; content: "."; display: block; height: 0; visibility: hidden; }
+div.gallery-item { float: left; width: 33%; }
+div.gallery-item a { display: block; margin: 5px; border: 1px solid #3c3c3c; }
+div.gallery-item img { display: block; width: 100%; height: auto;}
+#Gallery1 .ui-content, #Gallery2 .ui-content { overflow: hidden; }
+#Header { background: #EEBF02; height: 61px; padding: 0; border-bottom: 1px solid #3c3c3c;  }
+#Header img { display: block; margin: 0 auto 0; }
+
+#MainContent { background: #ffffff; padding-bottom: 30px; }
+
+#Footer { padding: 10px; border-top: none; } 
+
+div.label {
+    background-color:#d0d0d0;
+    padding:5px;
+    border-right:2px solid #fff;
+    text-align:center;
+}
+div.value {
+    text-align:center;
+    word-wrap:break-word;
+}
+div.placetype {
+    font-weight:normal;
+    font-style:italic;
+}
+p.footer {
+    font-size:.9em;
+    text-align:center;
+}

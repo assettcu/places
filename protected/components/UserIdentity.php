@@ -20,11 +20,11 @@ class UserIdentity extends CUserIdentity
         $username = $this->username;
         $password = $this->password;
         
-        try
-        {
+        try {
             Yii::app()->db;
             $dbload = true;
-        } catch (Exception $e) {
+        } 
+        catch (Exception $e) {
             # If Connection doesn't exist
             $dbload = false;
         }
@@ -112,13 +112,6 @@ class UserIdentity extends CUserIdentity
             }
 
         } else {
-            if($dbload and $user->loaded)
-            {
-                $user->attempts += 1;
-                if(!$user->save()) {
-                    echo $user->get_error();
-                }
-            }
             $this->errorCode=ERROR_INVALID_CREDENTIALS;
         }
         

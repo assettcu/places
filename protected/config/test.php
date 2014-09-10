@@ -9,7 +9,7 @@ return CMap::mergeArray(
 			),
             'db' => 
             array (
-              'connectionString' => 'mysql:host=olympic.colorado.edu;dbname=places',
+              'connectionString' => 'mysql:host=olympic.colorado.edu;dbname=places_staging',
               'emulatePrepare' => true,
               'username' => 'places',
               'password' => 'equalizations democratizations agrarianize remoralizing',

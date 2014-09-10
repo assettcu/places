@@ -68,8 +68,11 @@ class PlacesObj extends FactoryObj
   {
 	if($this->placeid > 0) {
 		$this->load();
-		$this->load_metadata();
-		$this->metadata->save();
+		if(isset($this->metadata) and is_object($this->metadata)) {
+		  if(!$this->metadata->save()) {
+              $this->set_error($this->metadata->get_error());
+		  }
+        }
 	}
   }
 
@@ -109,7 +112,7 @@ class PlacesObj extends FactoryObj
       SELECT      pictureid
       FROM        {{placepictures}}
       WHERE       placeid = :placeid
-      ORDER BY    sorder ASC
+      ORDER BY    coverphoto DESC, sorder ASC
       LIMIT       1;
     ";
     $command = $conn->createCommand($query);
@@ -135,7 +138,7 @@ class PlacesObj extends FactoryObj
       SELECT      pictureid
       FROM        {{placepictures}}
       WHERE       placeid = :placeid
-      ORDER BY    sorder ASC;
+      ORDER BY    coverphoto DESC, sorder ASC;
     ";
     $command = $conn->createCommand($query);
     $command->bindParam(":placeid",$this->placeid);
@@ -335,6 +338,47 @@ class PlacesObj extends FactoryObj
           return null;
       }
       return new PlacesObj($this->parentid);
+  }
+  
+  public function has_parent()
+  {
+      return ($this->parentid != 0);
+  }
+  
+  public function has_space($placetype) {
+      return (Yii::app()->db->createCommand()
+        ->select("COUNT(*)")
+        ->from("places")
+        ->where("placetypeid = (SELECT placetypeid FROM placetypes WHERE machinecode = :machinecode LIMIT 1) AND parentid = :parentid",
+            array(":machinecode"=>$placetype,":parentid"=>$this->placeid)
+        )
+        ->queryScalar() !=0);
+  }
+  
+  public function has_metadata_for($person) {
+      return (Yii::app()->db->createCommand()
+        ->select("COUNT(*)")
+        ->from("metadataext")
+        ->where("metatype = :metatype AND metadata_machinecode = :metadata_machinecode",
+            array(":metatype"=>$person,":metadata_machinecode"=>"metadata_".$this->placetype->machinecode)
+        )
+        ->queryScalar() !=0);
+  }
+  
+  public function has_location(){
+      if($this->placetype->machinecode != "building") {
+          return false;
+      }
+      return (Yii::app()->db->createCommand()
+        ->select("COUNT(*)")
+        ->from("metadata_building")
+        ->where("latitude != :latitude AND longitude != :longitude AND placeid = :placeid", array(
+            "longitude" => "0.000000",
+            "latitude" => "0.000000",
+            "placeid" => $this->placeid
+        ))
+        ->queryScalar() != 0
+     );
   }
   
 }
