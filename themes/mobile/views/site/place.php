@@ -16,7 +16,7 @@ $place->load_metadata();
 $childplaces = $place->get_children();
 
 # Session will keep which year/term (yt) user is looking at across the application
-$yt = "20144";
+$yt = "20147";
 if(!isset($_SESSION)) {
     session_start();
 }
@@ -43,9 +43,13 @@ if($place->placetype->machinecode == "building") {
 }
 # Load classes for a classroom
 else if($place->placetype->machinecode == "classroom") {
+    $parent = $place->get_parent();
+    $parent->load_metadata();
+    $building_code = $parent->metadata->data["building_code"]["value"];
     $classes = StdLib::external_call(
         "http://compass.colorado.edu/ascore/api/classroomclasses",
         array(
+            "building"  => $building_code,
             "classroom" => $place->placename,
             "term"      => $yt, # Semester/Year to lookup
         )
@@ -78,12 +82,12 @@ function footer() {
 <div data-role="page" id="images" data-dom-cache="false">
     
     <div data-role="header" data-position="fixed">
-        <a href="<?php echo Yii::app()->baseUrl; ?>" class="ui-btn ui-btn-left ui-btn-icon-left"><span class="icon icon-home"> </span> Home</a>
+        <a href="<?php echo Yii::app()->baseUrl; ?>" class="ui-btn ui-btn-left ui-btn-icon-left"><span class="icon icon-home"></span></a>
         <h1><?php echo $place->placename; ?></h1>
           <div data-role="navbar">
             <ul>
               <?php if($place->placetype->singular != "Building" and $place->parentid != 0): ?>
-              <li><a href="<?php Yii::app()->createUrl('place'); ?>?id=<?php echo $place->parentid; ?>" data-ajax='false'><span class="icon icon-point-left"> </span> Back</a></li>
+              <li><a href="<?php Yii::app()->createUrl('place'); ?>?id=<?php echo $place->parentid; ?>" data-ajax='false'><span class="icon icon-point-left"> </span><span class="nav-text"> Back</a></li>
               <?php endif; ?>
               <li><a href="#images" class="ui-btn-active ui-state-persist" data-transition="fade"><span class="icon icon-image2"> </span> <span class="nav-text">Images</span></a></li>
               <li><a href="#information" data-transition="fade"><span class="icon icon-office"> </span> <span class="nav-text"><?php echo $place->placetype->singular; ?> Info</span></a></li>
@@ -94,7 +98,7 @@ function footer() {
               <li><a href="#classes" data-transition="fade"><span class="icon icon-list"> </span> <span class="nav-text">Classes</span></a></li>
             </ul>
           </div>
-        <a href="<?=Yii::app()->baseUrl;?>/search" class="ui-btn ui-btn-right ui-btn-icon-right"><span class="icon icon-search"> </span> Search</a>
+        <a href="<?=Yii::app()->baseUrl;?>/search" class="ui-btn ui-btn-right ui-btn-icon-right"><span class="icon icon-search"></span></a>
     </div>
     
     <ul class="rslides centered-btns" id="slider2">
@@ -121,12 +125,12 @@ function footer() {
 <div data-role="page" id="information" data-dom-cache="false">
     
     <div data-role="header" data-position="fixed">
-        <a href="<?php echo Yii::app()->baseUrl; ?>" class="ui-btn ui-btn-left ui-btn-icon-left"><span class="icon icon-home"> </span> Home</a>
+        <a href="<?php echo Yii::app()->baseUrl; ?>" class="ui-btn ui-btn-left ui-btn-icon-left"><span class="icon icon-home"></span></a>
         <h1><?php echo $place->placename; ?></h1>
           <div data-role="navbar">
             <ul>
               <?php if($place->placetype->singular != "Building" and $place->parentid != 0): ?>
-              <li><a href="<?php Yii::app()->createUrl('place'); ?>?id=<?php echo $place->parentid; ?>" data-ajax='false'><span class="icon icon-point-left"> </span> Back</a></li>
+              <li><a href="<?php Yii::app()->createUrl('place'); ?>?id=<?php echo $place->parentid; ?>" data-ajax='false'><span class="icon icon-point-left"></span><span class="nav-text"> Back</a></li>
               <?php endif; ?>
               <li><a href="#images" data-transition="fade"><span class="icon icon-image2"> </span> <span class="nav-text">Images</span></a></li>
               <li><a href="#information" class="ui-btn-active ui-state-persist" data-transition="fade"><span class="icon icon-office"> </span> <span class="nav-text"><?php echo $place->placetype->singular; ?> Info</span></a></li>
@@ -137,7 +141,7 @@ function footer() {
               <li><a href="#classes" data-transition="fade"><span class="icon icon-list"> </span> <span class="nav-text">Classes</span></a></li>
             </ul>
           </div>
-        <a href="#" class="ui-btn ui-btn-right ui-btn-icon-right"><span class="icon icon-search"> </span> Search</a>
+        <a href="<?=Yii::app()->baseUrl;?>/search" class="ui-btn ui-btn-right ui-btn-icon-right"><span class="icon icon-search"></span></a>
     </div>
     
     <div data-role="main" class="ui-content">
@@ -163,12 +167,12 @@ function footer() {
 <div data-role="page" id="spaces" data-dom-cache="false">
     
     <div data-role="header" data-position="fixed">
-        <a href="<?php echo Yii::app()->baseUrl; ?>" class="ui-btn ui-btn-left ui-btn-icon-left"><span class="icon icon-home"> </span> Home</a>
+        <a href="<?php echo Yii::app()->baseUrl; ?>" class="ui-btn ui-btn-left ui-btn-icon-left"><span class="icon icon-home"></span></a>
         <h1><?php echo $place->placename; ?></h1>
           <div data-role="navbar">
             <ul>
               <?php if($place->placetype->singular != "Building" and $place->parentid != 0): ?>
-              <li><a href="<?php Yii::app()->createUrl('place'); ?>?id=<?php echo $place->parentid; ?>" data-ajax='false'><span class="icon icon-point-left"> </span> Back</a></li>
+              <li><a href="<?php Yii::app()->createUrl('place'); ?>?id=<?php echo $place->parentid; ?>" data-ajax='false'><span class="icon icon-point-left"></span> <span class="nav-text">Back</a></li>
               <?php endif; ?>
               <li><a href="#images" data-transition="fade"><span class="icon icon-image2"> </span> <span class="nav-text">Images</span></a></li>
               <li><a href="#information" data-transition="fade"><span class="icon icon-office"> </span> <span class="nav-text"><?php echo $place->placetype->singular; ?> Info</span></a></li>
@@ -179,7 +183,7 @@ function footer() {
               <li><a href="#classes" data-transition="fade"><span class="icon icon-list"> </span> <span class="nav-text">Classes</span></a></li>
             </ul>
           </div>
-        <a href="#" class="ui-btn ui-btn-right ui-btn-icon-right"><span class="icon icon-search"> </span> Search</a>
+        <a href="<?=Yii::app()->baseUrl;?>/search" class="ui-btn ui-btn-right ui-btn-icon-right"><span class="icon icon-search"></span></a>
     </div>
     
     <div data-role="main" class="ui-content">
@@ -222,12 +226,12 @@ function footer() {
 <div data-role="page" id="map" data-dom-cache="false">
     
     <div data-role="header" data-position="fixed">
-        <a href="<?php echo Yii::app()->baseUrl; ?>" class="ui-btn ui-btn-left ui-btn-icon-left"><span class="icon icon-home"> </span> Home</a>
+        <a href="<?php echo Yii::app()->baseUrl; ?>" class="ui-btn ui-btn-left ui-btn-icon-left"><span class="icon icon-home"></span></a>
         <h1><?php echo $place->placename; ?></h1>
           <div data-role="navbar">
             <ul>
               <?php if($place->placetype->singular != "Building" and $place->parentid != 0): ?>
-              <li><a href="<?php Yii::app()->createUrl('place'); ?>?id=<?php echo $place->parentid; ?>" data-ajax='false'><span class="icon icon-point-left"> </span> Back</a></li>
+              <li><a href="<?php Yii::app()->createUrl('place'); ?>?id=<?php echo $place->parentid; ?>" data-ajax='false'><span class="icon icon-point-left"></span> <span class="nav-text">Back</a></li>
               <?php endif; ?>
               <li><a href="#images" data-transition="fade"><span class="icon icon-image2"> </span> <span class="nav-text">Images</span></a></li>
               <li><a href="#information" data-transition="fade"><span class="icon icon-office"> </span> <span class="nav-text"><?php echo $place->placetype->singular; ?> Info</span></a></li>
@@ -238,7 +242,7 @@ function footer() {
               <li><a href="#classes" data-transition="fade"><span class="icon icon-list"> </span> <span class="nav-text">Classes</span></a></li>
             </ul>
           </div>
-        <a href="#" class="ui-btn ui-btn-right ui-btn-icon-right"><span class="icon icon-search"> </span> Search</a>
+        <a href="<?=Yii::app()->baseUrl;?>/search" class="ui-btn ui-btn-right ui-btn-icon-right"><span class="icon icon-search"></span></a>
     </div>
     
     <div data-role="main" class="ui-content">
@@ -251,13 +255,13 @@ function footer() {
 
 <div data-role="page" id="classes" data-dom-cache="false">
     
-    <div data-role="header" data-position="fixed">
-        <a href="<?php echo Yii::app()->baseUrl; ?>" class="ui-btn ui-btn-left ui-btn-icon-left"><span class="icon icon-home"> </span> Home</a>
+    <div data-role="header" data-position="inline">
+        <a href="<?php echo Yii::app()->baseUrl; ?>" class="ui-btn ui-btn-left ui-btn-icon-left"><span class="icon icon-home"></span></a>
         <h1><?php echo $place->placename; ?></h1>
           <div data-role="navbar">
             <ul>
               <?php if($place->placetype->singular != "Building" and $place->parentid != 0): ?>
-              <li><a href="<?php Yii::app()->createUrl('place'); ?>?id=<?php echo $place->parentid; ?>" data-ajax='false'><span class="icon icon-point-left"> </span> Back</a></li>
+              <li><a href="<?php Yii::app()->createUrl('place'); ?>?id=<?php echo $place->parentid; ?>" data-ajax='false'><span class="icon icon-point-left"></span> <span class="nav-text">Back</a></li>
               <?php endif; ?>
               <li><a href="#images" data-transition="fade"><span class="icon icon-image2"> </span> <span class="nav-text">Images</span></a></li>
               <li><a href="#information" data-transition="fade"><span class="icon icon-office"> </span> <span class="nav-text"><?php echo $place->placetype->singular; ?> Info</span></a></li>
@@ -268,7 +272,7 @@ function footer() {
               <li><a href="#classes" class="ui-btn-active ui-state-persist" data-transition="fade"><span class="icon icon-list"> </span> <span class="nav-text">Classes</span></a></li>
             </ul>
           </div>
-        <a href="#" class="ui-btn ui-btn-right ui-btn-icon-right"><span class="icon icon-search"> </span> Search</a>
+        <a href="<?=Yii::app()->baseUrl;?>/search" class="ui-btn ui-btn-right ui-btn-icon-right"><span class="icon icon-search"></span></a>
     </div>
     
     <div data-role="main" class="ui-content">
@@ -280,58 +284,48 @@ function footer() {
                 <?php endforeach; ?>
             </select>
         </form>
-        <table data-role="table" data-mode="reflow" class="ui-responsive ui-shadow" id="myTable">
-            <thead>
-                <tr>
-                    <th>Course</th>
-                    <th class="calign">Section</th>
-                    <th>Class</th>
-                    <th class="calign">Room</th>
-                    <th class="calign">Meets</th>
-                </tr>
-            </thead>
-            <tbody>
-                
-            <?php if(count($classes) > 0): ?>
-            <?php $count=0; foreach($classes as $class): $count++; ?>
-                <?php
-                # Do some processing before displaying
+
+        <div id="courses-listview">
+        <ul data-role="listview" data-inset="true" data-filter="true" data-filter-placeholder="Filter classes" class="course-listing ui-icon-alt">
+          <?php if(count($classes) > 0): ?>
+            <?php 
+              $count=0; 
+              foreach($classes as $class): 
+                $count++; 
                 $starttime  = $class["timestart"];
                 $endtime    = $class["timeend"];
                 $datetime = new DateTime($starttime);
                 $starttime = $datetime->format("g:i a");
                 $datetime = new DateTime($endtime);
                 $endtime = $datetime->format("g:i a");
-                
                 $catalog_term = "2013-14";
-                ?>
-            <tr class="<?php echo ($count%2==0) ? 'odd' : 'even'; ?>">
-                <td>
-                    <a href="http://www.colorado.edu/catalog/<?php echo $catalog_term; ?>/courses?subject=<?php echo $class["subject"]; ?>&number=<?php echo $class["course"]; ?>" target="_blank">
-                        <?php echo $class["subject"]; ?> <?php echo $class["course"]; ?>
-                    </a>
-                </td>
-                <td class="calign"><?php echo substr("00".$class["section"],-3,3); ?></td>
-                <td><?php echo $class["title"]; ?></td>
-                <?php if($place->placetype->machinecode == "building" and in_array($class["building"]." ".$class["roomnum"],$childplace_names,FALSE)): ?>
-                <td class="calign">
-                    <a href="<?php echo Yii::app()->createUrl("place"); ?>?id=<?php echo $class["building"]." ".$class["roomnum"]; ?>" ref="external"><?php echo $class["building"]." ".$class["roomnum"]; ?></a>
-                </td>
-                <?php else: ?>
-                <td class="calign"><?php echo $class["building"]." ".$class["roomnum"]; ?></td>
-                <?php endif; ?>
-                <td class="calign"><?php echo $class["meetingdays"]; ?> <?php echo @$starttime." - ".@$endtime; ?></td>
-            </tr>
-            <?php endforeach; ?>
-            <?php else: ?>
-            <tr>
-                <td class="empty" colspan="7">
-                    There are no classes in this <?php echo strtolower($place->placetype->singular); ?> currently for <?php echo $yt; ?>.
-                </td>
-            </tr>
-            <?php endif; ?>
-            </tbody>
-        </table>
+                $linkable = ($place->placetype->machinecode == "building" and in_array($class["building"]." ".$class["roomnum"],$childplace_names,FALSE));
+            ?>
+
+            <li>
+              <?php if($linkable): ?>
+                <a href="<?php echo Yii::app()->createUrl('place'); ?>?id=<?php echo $class['building'].' '.$class['roomnum']; ?>" data-ajax="false">
+              <?php endif; ?>
+                <h2>
+                  <?php echo $class["subject"]; ?> <?php echo $class["course"]; ?>-<span style="font-weight:normal;"><?php echo substr("00".$class["section"],-3,3); ?></span>
+                </h2>
+                <span class="ui-li-aside">
+                  <?php echo $class["building"]." ".$class["roomnum"]; ?>
+                </span>
+                <p style="font-style:italic; font-size: 0.8rem;"><?php echo $class["title"]; ?></p>
+                <p><?php echo $class["meetingdays"]; ?> <?php echo @$starttime." - ".@$endtime; ?></td></p>
+              <?php if($linkable): ?>
+                </a>
+              <?php endif; ?>
+            </li>
+          <?php endforeach; ?>
+        <?php else : ?>
+          <li>
+            <p style="white-space:normal; text-align:center;">There are no classes in this <?php echo strtolower($place->placetype->singular); ?> currently for <?php echo $yt; ?>.</p>
+          </li>
+        <?php endif; ?>
+      </ul>
+      </div>
     </div>
     
     <?php footer(); ?>

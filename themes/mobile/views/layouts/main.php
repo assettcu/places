@@ -94,11 +94,12 @@
         });
         
         $(document).on("pagecreate","#classes",function(){
-            $("#yt").on('change',function(){
+            $("#yt-select").on('change',function(){
+                $("#courses-listview").html("<div style='text-align: center;'>Loading term " + $("#yt-select option:selected").text() + "</div>");
                 $.ajax({
-                   "url":   "<?php echo Yii::app()->baseUrl; ?>/ajax/loadclasses/id/<?php echo @$_REQUEST["id"]; ?>/yt/"+$("#yt").val(),
+                   "url":   "<?php echo Yii::app()->baseUrl; ?>/ajax/loadclasses/id/<?php echo @$_REQUEST["id"]; ?>/yt/"+$("#yt-select").val(),
                    "success": function(data) {
-                       $("#myTable tbody").html(data).parent().enhanceWithin().refresh();
+                       $("#courses-listview").html(data).parent().enhanceWithin().refresh();
                    } 
                 });
             });
@@ -107,6 +108,7 @@
 </head>
 
 <body>
+
 
 <div class="container" id="page">
 
