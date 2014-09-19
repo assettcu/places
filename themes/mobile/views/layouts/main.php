@@ -27,6 +27,7 @@
     <script type="text/javascript">
         jQuery(document).on("pagechange",function(event,data){
             var page = data.toPage[0].id;
+
             if(page == "map") {
                 jQuery("#map_canvas").css({'height':$(window).height()-170});
                 jQuery('#map_canvas').gmap('refresh');
@@ -35,25 +36,12 @@
                 jQuery("#slider2").css({'height':$(window).height()-170});
             }
         });
-        
-        jQuery(document).on("pagecreate",function(event){
-            
-            if(window.orientation == 0) { 
-                jQuery("span.nav-text").hide();
+
+        jQuery(document).on("pagebeforechange",function(event,data){
+            if(typeof(data.toPage[0]) != "undefined") {
+                $('.place-navbar ul li a').removeClass("ui-btn-active ui-btn:active");
+                $('#place-navbar-' + data.toPage[0].id + ' a').addClass("ui-btn-active");
             }
-            else {
-                jQuery("span.nav-text").show();
-            } 
-            jQuery(window).on("orientationchange",function(){
-                jQuery("#map_canvas").css({'height':$(window).height()-170});
-                if(window.orientation == 0)
-                { 
-                    jQuery("span.nav-text").hide();
-                }
-                else {
-                    jQuery("span.nav-text").show();
-                }
-            });
         });
         
         jQuery(document).on("pageinit","#images",function(event){

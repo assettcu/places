@@ -1,3 +1,8 @@
+#places-logo {
+	display:inline;
+	padding:5px 10px;
+}
+
 table tbody tr.odd td {
 	background-color:#f0f0f0;
 }
