@@ -4,7 +4,7 @@ $buildings = load_places("building");
 
 <div data-role="page" id="pageone">
     <div data-role="header">
-        <img alt="" style="display:inline;padding:5px 10px;" src="//places.colorado.edu/library/images/mobile-logo-large.png" height="42" />
+        <img id="places-logo" alt="University of Colorado - Places" src="<?php echo StdLib::load_image_source("mobile-logo-large"); ?>" height="42" />
         <a href="<?=Yii::app()->baseUrl;?>/search" id="search-button" class="ui-btn ui-btn-right ui-btn-icon-right"><span class="icon icon-search"> </span> Search</a>
     </div>
     <div data-role="main" class="ui-content">
