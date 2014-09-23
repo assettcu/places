@@ -1,4 +1,5 @@
 <?php
+$childplace_names[] = array();
 
 if(isset($_REQUEST["id"])) {
 	$place = new PlacesObj($_REQUEST["id"]);
@@ -100,7 +101,7 @@ function insert_header($place) {
               <li id="place-navbar-classes"><a href="#classes" data-transition="fade"><span class="icon icon-list"> </span> <span class="nav-text">Classes</span></a></li>
             </ul>
           </div>
-        <a href="<?=Yii::app()->baseUrl;?>/search" class="ui-btn ui-btn-right ui-btn-icon-right"><span class="icon icon-search"></span></a>
+        <a href="<?php echo Yii::app()->baseUrl;?>/search" class="ui-btn ui-btn-right ui-btn-icon-right"><span class="icon icon-search"></span></a>
     </div>
 <?php
   $contents = ob_get_contents();
@@ -120,10 +121,10 @@ function insert_header($place) {
             <li><a href="#"><?php echo $image->render(); ?></a></li>
         <?php
         else :
-        foreach($place->images as $image): $image->make_thumb(true);
+        foreach($place->images as $image): $image->make_thumb();
         ?>
             <li><a href="#">
-                <?php echo $image->render(); ?>
+                <img src="<?php echo $image->load_image_href(); ?>">
             </a></li>
         <?php endforeach; ?>
         <?php endif; ?>
@@ -165,19 +166,19 @@ function insert_header($place) {
         <ul data-role="listview" data-filter="true" data-input="#myFilter">
         <?php if(!empty($childplaces)):  ?>
             <?php foreach($childplaces as $childplace):
-                      $childplace_names[] = $childplace->placename;
-                      $image = $childplace->load_first_image();
-                      if(!$image->loaded) {
-                        $image = new PictureObj(1);
-                      }
-                      if(!$image->loaded) {
-                          continue;
-                      }
-                      $thumb = $image->get_thumb();
-            ?>
+            $childplace_names[] = $childplace->placename;
+            $image = $childplace->load_first_image();
+            if(!$image->loaded) {
+              $image = new PictureObj(1);
+            }
+            if(!$image->loaded) {
+              continue;
+            }
+            $image->make_thumb(false);
+          ?>
             <li value="<?php echo $childplace->placeid;?>">
-                <a href="<?=Yii::app()->createUrl('place');?>?id=<?=$childplace->placeid;?>" data-transition="fade" data-ajax="false">
-                    <?php $childplace->render_first_image("auto","auto","thumb"); ?>
+                <a href="<?php echo Yii::app()->createUrl('place');?>?id=<?=$childplace->placeid;?>" data-transition="fade" data-ajax="false">
+                    <img src="<?php echo $image->get_thumb(); ?>">
                     <?php echo $childplace->placename;?>
                     <div class="placetype"><?php echo $childplace->placetype->singular; ?></div>
                     <?php if(isset($childplace->description) and !empty($childplace->description)): ?>
@@ -197,6 +198,7 @@ function insert_header($place) {
     <?php footer(); ?>
 </div>
 
+
 <?php if($place->placetype->machinecode == "building") : ?>
 <div data-role="page" id="map" data-dom-cache="false">
     
@@ -209,6 +211,7 @@ function insert_header($place) {
     <?php footer(); ?>
 </div>
 <?php endif; ?>
+
 
 <div data-role="page" id="classes" data-dom-cache="false">
     

@@ -4,26 +4,33 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="language" content="en" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	
-    <link rel="stylesheet" href="//code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" />
-    <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="//code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
+	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
+
+    <!-- <link rel="stylesheet" href="//code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.css" /> -->
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jquerymobile/1.4.3/jquery.mobile.min.css" />
     <link rel="stylesheet" href="<?php echo Yii::app()->baseUrl; ?>/library/fonts/icomoon/style.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/mobile.css" media="screen, projection" />
-
-	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
-	
-    
     <link rel="stylesheet" href="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/photoswipe/1.0.11/photoswipe.css" />
-    <script type="text/javascript" src="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/photoswipe/1.0.11/lib/simple-inheritance.min.js"></script>
-    <script type="text/javascript" src="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/photoswipe/1.0.11/code-photoswipe-jQuery-1.0.11.min.js"></script>
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script> 
-    <script type="text/javascript" src="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/map/ui/min/jquery.ui.map.min.js"></script>
-    
     <link rel="stylesheet" href="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/responsiveslides/responsiveslides.css">
     <link rel="stylesheet" href="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/responsiveslides/demo/demo.css">
+</head>
+<body>
+    <div class="container" id="page">
+        <?php echo $content; ?>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquerymobile/1.4.3/jquery.mobile.min.js"></script>
+
+    <!-- <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="//code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script> -->
+    <script type="text/javascript" src="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/map/ui/min/jquery.ui.map.min.js"></script>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script> 
+
+    <script type="text/javascript" src="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/photoswipe/1.0.11/lib/simple-inheritance.min.js"></script>
+    <script type="text/javascript" src="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/photoswipe/1.0.11/code-photoswipe-jQuery-1.0.11.min.js"></script>
+
     <script src="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/responsiveslides/responsiveslides.min.js"></script>
-    
     <script type="text/javascript">
         jQuery(document).on("pagechange",function(event,data){
             var page = data.toPage[0].id;
@@ -93,15 +100,5 @@
             });
         });
     </script>
-</head>
-
-<body>
-
-
-<div class="container" id="page">
-
-	<?php echo $content; ?>
-</div><!-- page -->
-
 </body>
 </html>
