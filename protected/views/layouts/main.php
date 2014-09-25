@@ -44,15 +44,17 @@ $theme = "bluebird";
     <script src="//ajax.googleapis.com/ajax/libs/jquery/<?php echo  Yii::app()->params["LOCALAPP_JQUERY_VER"]; ?>/jquery.min.js" type="text/javascript"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/<?php echo Yii::app()->params["LOCALAPP_JQUERYUI_VER"]; ?>/jquery-ui.min.js" type="text/javascript"></script>
 
-    <script src="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/cookie/jquery.cookie.js" type="text/javascript"></script>
+    <script src="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/cookie/1.4.1/jquery.cookie.js" type="text/javascript"></script>
     <script src="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/sticky/jquery.sticky.js" type="text/javascript"></script>
     <link rel="stylesheet" href="<?php echo WEB_LIBRARY_PATH; ?>/jquery/themes/<?=$theme?>/jquery-ui.css" type="text/css" />
     
     <link rel="stylesheet" href="//compass.colorado.edu/libraries/javascript/jquery/modules/tiptip/tipTip.css" type="text/css" />
-    <script src="//compass.colorado.edu/libraries/javascript/jquery/modules/tiptip/jquery.tipTip.js"></script>
+    <script src="//compass.colorado.edu/libraries/javascript/jquery/modules/tiptip/jquery.tipTip.minified.js"></script>
+
     <link rel="stylesheet" href="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/datatables/media/css/jquery.dataTables.css" type="text/css" />
     <script src="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/datatables/media/js/jquery.dataTables.min.js"></script>
-    <script src="<?php echo WEB_LIBRARY_PATH; ?>jquery/modules/galleria/galleria-1.3.6.js"></script>
+
+    <script src="<?php echo WEB_LIBRARY_PATH; ?>jquery/modules/galleria/galleria-1.4.2.min.js"></script>
     
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script> 
     <script type="text/javascript" src="<?php echo WEB_LIBRARY_PATH; ?>/jquery/modules/map/ui/min/jquery.ui.map.min.js"></script>
