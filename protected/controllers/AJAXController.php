@@ -23,22 +23,26 @@ class AJAXController extends BaseController
         # Load classes for a building
         if($place->placetype->machinecode == "building") {
             $classes = StdLib::external_call(
-                "http://assettdev.colorado.edu/ascore/api/buildingclasses",
+                "http://compass.colorado.edu/ascore/api/buildingclasses",
                 array(
                     "building"  => $place->metadata->data["building_code"]["value"],
                     "term"      => $yt, # Semester/Year to lookup
-                )
-            );
+                    )
+                );
         }
         # Load classes for a classroom
         else if($place->placetype->machinecode == "classroom") {
+            $parent = $place->get_parent();
+            $parent->load_metadata();
+            $building_code = $parent->metadata->data["building_code"]["value"];
             $classes = StdLib::external_call(
-                "http://assettdev.colorado.edu/ascore/api/classroomclasses",
+                "http://compass.colorado.edu/ascore/api/classroomclasses",
                 array(
+                    "building"  => $building_code,
                     "classroom" => $place->placename,
                     "term"      => $yt, # Semester/Year to lookup
-                )
-            );
+                    )
+                );
         }
         # Don't load classes if other
         else {
@@ -53,47 +57,40 @@ class AJAXController extends BaseController
         }
         
         ob_start();
-        if(empty($classes)) {
-            ?>
-            <tr>
-                <td class="empty" colspan="7">
-                    There are no classes in this <?php echo strtolower($place->placetype->singular); ?> currently for <?php echo $yt; ?>.
-                </td>
-            </tr>
-            <?php
-        }
-        else {
-           $count=0; foreach($classes as $class): $count++; ?>
-                <?php
-                # Do some processing before displaying
+        ?> <ul data-role="listview" data-inset="true" data-filter="true" data-filter-placeholder="Filter classes" class="course-listing ui-icon-alt"> <?php
+        if(count($classes) > 0): ?>
+            <?php 
+              $count=0; 
+              foreach($classes as $class): 
+                $count++; 
                 $starttime  = $class["timestart"];
                 $endtime    = $class["timeend"];
                 $datetime = new DateTime($starttime);
                 $starttime = $datetime->format("g:i a");
                 $datetime = new DateTime($endtime);
                 $endtime = $datetime->format("g:i a");
-                
                 $catalog_term = "2013-14";
-                ?>
-            <tr class="<?php echo ($count%2==0) ? 'odd' : 'even'; ?>">
-                <td>
-                    <a href="http://www.colorado.edu/catalog/<?php echo $catalog_term; ?>/courses?subject=<?php echo $class["subject"]; ?>&number=<?php echo $class["course"]; ?>" target="_blank">
-                        <?php echo $class["subject"]; ?> <?php echo $class["course"]; ?>
-                    </a>
-                </td>
-                <td class="calign"><?php echo substr("00".$class["section"],-3,3); ?></td>
-                <td><?php echo $class["title"]; ?></td>
-                <?php if($place->placetype->machinecode == "building" and in_array($class["building"]." ".$class["roomnum"],$childplace_names,FALSE)): ?>
-                <td class="calign">
-                    <a href="<?php echo Yii::app()->createUrl("place"); ?>?id=<?php echo $class["building"]." ".$class["roomnum"]; ?>" ref="external"><?php echo $class["building"]." ".$class["roomnum"]; ?></a>
-                </td>
-                <?php else: ?>
-                <td class="calign"><?php echo $class["building"]." ".$class["roomnum"]; ?></td>
-                <?php endif; ?>
-                <td class="calign"><?php echo $class["meetingdays"]; ?> <?php echo @$starttime." - ".@$endtime; ?></td>
-            </tr>
-            <?php endforeach;
-        }
+            ?>
+
+            <li>
+              <a href="<?php echo Yii::app()->createUrl("place"); ?>?id=<?php echo $class["building"]." ".$class["roomnum"]; ?>" ref="external">
+                <h2>
+                  <?php echo $class["subject"]; ?> <?php echo $class["course"]; ?>-<span style="font-weight:normal;"><?php echo substr("00".$class["section"],-3,3); ?></span>
+                </h2>
+                <span class="ui-li-aside">
+                  <?php echo $class["building"]." ".$class["roomnum"]; ?>
+                </span>
+                <p style="font-style:italic; font-size: 0.8rem;"><?php echo $class["title"]; ?></p>
+                <p><?php echo $class["meetingdays"]; ?> <?php echo @$starttime." - ".@$endtime; ?></td></p>
+              </a>
+            </li>
+          <?php endforeach; ?>
+        <?php else : ?>
+          <li>
+            <p style="white-space:normal; text-align:center;">There are no classes in this <?php echo strtolower($place->placetype->singular); ?> currently for <?php echo $yt; ?>.</p>
+          </li>
+        <?php endif;
+        ?> </ul> <?php
         $return = ob_get_contents();
         ob_end_clean();
         

@@ -24,15 +24,19 @@
     </div>
 
       <?php if($validQuery) : ?>
-
-<!--  -->
       <ul data-role="listview" data-filter="true" data-input="#myFilter">
         <?php foreach($places as $building): ?>
         <li value="<?=$building->placeid;?>">
-          <a href="<?=Yii::app()->createUrl('place');?>?id=<?=$building->placeid;?>" data-transition="slide" data-ajax="false" >
+          <a href="<?=Yii::app()->createUrl('place'); ?>?id=<?php echo $building->placename; ?><?php if(isset($building->yearterm)) { ?>&yt=<?php echo $building->yearterm; } ?>&ref=<?php echo $_REQUEST['q']; ?>" data-transition="slide" data-ajax="false" >
             <?php $building->render_first_image("auto","auto","thumb"); ?>
-            <?=preg_replace('/('.$query.')/i', '<strong>$0</strong>', $building->placename);?>
+            <div class="search-list-item">
+            <span class="search-list-item-title"><?=preg_replace('/('.$query.')/i', '<strong>$0</strong>', $building->placename);?></span>
             <br><span class="placetype-<?php echo $building->placetype->machinecode; ?>"><?php echo $building->placetype->singular; ?></span>
+            <?php
+            if($search_type == "classes") { 
+              echo "<span class='search-class-title'><br>".preg_replace('/('.$query.')/i', '<strong>$0</strong>', $building->class)." (".yearterm_code_to_display($building->yearterm).")"."</span>"; 
+            } ?>
+            </div>
           </a>
         </li>
         <?php endforeach; ?>
