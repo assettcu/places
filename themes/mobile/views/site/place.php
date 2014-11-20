@@ -83,7 +83,7 @@ function insert_header($place) {
   ob_start();
 ?>
 <div data-role="header" data-position="inline">
-        <a href="<?php echo Yii::app()->baseUrl; ?>" class="ui-btn ui-btn-left ui-btn-icon-left"><span class="icon icon-home"></span></a>
+        <a href="<?php echo Yii::app()->getBaseUrl(); ?>" class="ui-btn ui-btn-left ui-btn-icon-left"><span class="icon icon-home"></span></a>
         <h1><?php echo $place->placename; ?></h1>
           <div data-role="navbar" class="place-navbar">
             <ul>
@@ -101,7 +101,7 @@ function insert_header($place) {
               <li id="place-navbar-classes"><a href="#classes" data-transition="fade"><span class="icon icon-list"> </span> <span class="nav-text">Classes</span></a></li>
             </ul>
           </div>
-        <a href="<?php echo Yii::app()->baseUrl;?>/search" class="ui-btn ui-btn-right ui-btn-icon-right"><span class="icon icon-search"></span></a>
+        <a href="<?php echo Yii::app()->getBaseUrl();?>/search" class="ui-btn ui-btn-right ui-btn-icon-right"><span class="icon icon-search"></span></a>
     </div>
 <?php
   $contents = ob_get_contents();
