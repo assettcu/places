@@ -48,8 +48,8 @@
       </div>
     <div data-role="footer">
         <p class="footer">
-            Developed by <a href="http//assett.colorado.edu">ASSETT</a> | Copyright &copy; <?php echo date("Y"); ?><br/>
-            All Rights Reserved | <a href="http//colorado.edu">University of Colorado Boulder</a> | <a href="<?php echo Yii::app()->createUrl('ToStandard'); ?>"data-ajax="false">Full Site</a>
+            Developed by <a href="http://assett.colorado.edu" rel="external">ASSETT</a> | Copyright &copy; <?php echo date("Y"); ?><br/>
+            All Rights Reserved | <a href="http://colorado.edu" rel="external">University of Colorado Boulder</a> | <a href="<?php echo Yii::app()->createUrl('ToStandard'); ?>" data-ajax="false">Full Site</a>
         </p>
     </div>
 </div>
