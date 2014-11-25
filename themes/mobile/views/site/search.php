@@ -5,7 +5,7 @@
 
 <div data-role="page" id="pageone">
     <div data-role="header">
-    <a href="<?php echo Yii::app()->getBaseUrl(); ?>" class="ui-btn ui-btn-left ui-btn-icon-left"><span class="icon icon-home"> </span> Home</a>
+    <a href="<?php echo Yii::app()->getBaseUrl();?>/" class="ui-btn ui-btn-left ui-btn-icon-left"><span class="icon icon-home"> </span> Home</a>
         <h1>Search</h1>
     </div>
     <div data-role="main" class="ui-content">
