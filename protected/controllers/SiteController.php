@@ -120,7 +120,7 @@ class SiteController extends Controller
 	public function actionToStandard()
 	{
 		Yii::app()->user->setState("mobile",false);
-		$this->redirect(Yii::app()->baseUrl);
+		$this->redirect(Yii::app()->createUrl("index"));
 		exit;
 	}
 	

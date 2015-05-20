@@ -33,12 +33,17 @@ ul.rig li div.image-container {
 	max-width: 100%;
 	height:150px;
 	margin: 0 0 10px;
+	overflow: hidden;
+	position: relative;
 }
 
 ul.rig li img {
-	max-width: 100%;
-	height:100%;
+	height: auto;
+	width:100%;
 	margin: 0 0 10px;
+	position: absolute;
+    top:-100%; left:0; right: 0; bottom:-100%;
+    margin: auto;
 }
 
 ul.rig li div.title {
