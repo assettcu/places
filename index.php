@@ -8,14 +8,8 @@ if(YII_DEBUG) {
 }
 
 // change the following paths if necessary
-$yii=dirname(__FILE__).'/framework/yii-master/framework/yii.php';
+$yii=dirname(__FILE__).'/../yii/framework/yii.php';
 $config=dirname(__FILE__).'/protected/config/main.php';
-
-# If Yii framework does not exist, then let's update it
-if(!is_file($yii)) {
-    header("Location: yii-update.php");
-    exit;
-}
 
 // specify how many levels of call stack should be shown in each log message
 defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL',3);
