@@ -34,8 +34,6 @@ class SiteController extends Controller
     */
     public function actionLogin()
     {
-        ini_set("display_errors",1);
-        error_reporting(E_ALL);
         if(!Yii::app()->user->isGuest) Yii::app()->user->logout();
         $this->makeSSL();
         $model = new LoginForm;
@@ -75,47 +73,6 @@ class SiteController extends Controller
         }
 		return $action;
 	}
-
-    /**
-     * Installation action. To be done only once when the application is first being setup.
-     */
-    public function actionInstall()
-    {
-        # Let's destroy any sessions currently, just in case.
-        @Yii::app()->session->destroy();
-        
-        if(isset($_REQUEST["yii"]) and $_REQUEST["yii"] == "installed") {
-            Yii::app()->user->setFlash("success","Succssfully installed the Yii Framework! Continue the installation by filling in the form below.");
-            $this->redirect("install");
-            exit;
-        }
-        
-        # Does the application need installing? Check if database exists.
-        $config_ext = Yii::app()->basePath."\\config\\main-ext.php";
-        if(is_file($config_ext)) {
-            Yii::app()->user->setFlash("warning","This application is already installed. Please delete the main-ext.php file to re-install.");
-            $this->redirect(Yii::app()->createUrl('index'));
-        }
-        
-        # Submitted form. Technically only one stage but verifies form was submitted.
-        if(isset($_REQUEST["stage"]) and $_REQUEST["stage"] == "init") {
-            # Create a new System without initializing
-            $system = new System(false);
-            
-            # Install the system
-            if($system->install()) {
-                # Redirect to main page, the system will catch that we have no tables installed and will install them.
-                $this->redirect(Yii::app()->baseUrl);
-                exit;
-            }
-            else {
-                Yii::app()->user->setFlash("error","There was an error installing the application: ".$system->get_error());
-            }
-        }
-        
-        # Render the form interface
-        $this->render("install");
-    }
 	
 	public function actionToStandard()
 	{

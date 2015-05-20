@@ -10,13 +10,26 @@ $flashes->render();
 <script type="text/javascript" src="<?php echo WEB_LIBRARY_PATH; ?>jquery/modules/plupload/js/plupload.full.js"></script>
 <script type="text/javascript" src="<?php echo WEB_LIBRARY_PATH; ?>jquery/modules/plupload/js/jquery.plupload.queue/jquery.plupload.queue.js"></script>
 
+<style>
+a.deleteplace {
+    color:#C00;
+    text-decoration:none;
+    font-size:13px;
+    margin:10px;
+}
+a.deleteplace:hover {
+    color:#E00;
+}
+</style>
+
 <form method="post" id="editplace">
     <input type="hidden" name="editplace-form" value="true" />
     <div id="editplace-buttons" class="sticky" sticky="85">
         <div class="button-container">
             <button id="viewplace">View Place</button>
-            <button id="saveplace">Save Place</button><br/>
-            <button id="cancel">&lt; Go Back</button>
+            <button id="saveplace">Save Place</button>
+            <button id="cancel">&lt; Go Back</button><br/><br/>
+            <a href="#" class="deleteplace">Delete Place</a>
         </div>
     </div>
     <table class="fancy-table" id="editplace" style="border-spacing:3px;">
@@ -137,7 +150,7 @@ $flashes->render();
                         <?php if($metadata["inputtype"] == "textarea"): ?>
                         <textarea name="<?php echo $index; ?>" id="<?php echo $index; ?>" rows="6" cols="50"><?php echo $metadata["value"]; ?></textarea>
                         <?php elseif($metadata["inputtype"] == "text"): ?>
-                        <input type="text" name="<?php echo $index; ?>" id="<?php echo $index; ?>" value='<?php echo $metadata["value"]; ?>' />
+                        <input type="text" name="<?php echo $index; ?>" id="<?php echo $index; ?>" value='<?php echo str_replace("'","\"",$metadata["value"]); ?>' />
                         <?php endif; ?>
                         <?php if($metadata["metatype"] == "none"): ?>(<span class="date">hidden</span>)<?php endif; ?>
                     </div>
@@ -198,6 +211,32 @@ jQuery(document).ready(function($){
     $("button#viewplace").click(function(){
         window.open("<?php echo Yii::app()->createUrl('site/place'); ?>?id=<?php echo $place->placename; ?>");
         return false;
+    });
+    
+    $(document).on("click",".deleteplace",function() {
+        $.ajax({
+            "url": "<?php echo Yii::app()->createUrl('ajax/HasChildren');?>",
+            "data": "placeid=<?php echo $place->placeid; ?>",
+            "success": function(response) {
+                var r = null;
+                if(response == "true") {
+                    r = confirm("This place has spaces inside of it. Deleting this place will delete those spaces as well.\n\nContinue with deletion?");
+                }
+                else {
+                    r = confirm("Are you sure you wish to delete this place?");
+                }
+                if(r) {
+                    $.ajax({
+                        "url":  "<?php echo Yii::app()->createUrl('ajax/deletePlace'); ?>",
+                        "data": "placeid=<?php echo $place->placeid; ?>",
+                        "success": function(response) {
+                            window.location = "<?php echo Yii::app()->createUrl('backend/manageplaces'); ?>";
+                            return false;
+                        }
+                    });
+                }
+            } 
+        });
     });
 
     // Submit the new Property post

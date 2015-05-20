@@ -190,7 +190,7 @@ class FactoryObj
 
 	public function pre_delete()
 	{
-
+		# This is meant to be overloaded
 	}
 
 	public function delete()

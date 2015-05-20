@@ -372,4 +372,35 @@ class AJAXController extends BaseController
         
         return true;
     }
+    
+    public function actionHasChildren()
+    {
+        $rest = new RestServer();
+        $request = RestUtils::processRequest();
+        $required = array("placeid");
+        $keys = array_keys($request);
+        if(count(array_intersect($required, $keys)) != count($required)) {
+            return RestUtils::sendResponse(308);
+        }
+        
+        $place = new PlacesObj($request["placeid"]);
+        return print json_encode($place->has_children());
+    }
+    
+    public function actionDeletePlace()
+    {
+        $rest = new RestServer();
+        $request = RestUtils::processRequest();
+        $required = array("placeid");
+        $keys = array_keys($request);
+        if(count(array_intersect($required, $keys)) != count($required)) {
+            return RestUtils::sendResponse(308);
+        }
+        
+        $place = new PlacesObj($request["placeid"]);
+        $place->delete();
+        
+        Yii::app()->user->setFlash('success',"Successfully deleted ".$place->placename." from places.");
+        return print true;
+    }
 }

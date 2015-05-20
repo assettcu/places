@@ -217,6 +217,14 @@ class PlacesObj extends FactoryObj
 	return $this->children;
   }
   
+  public function has_children() {
+      return (Yii::app()->db->createCommand()
+        ->select("COUNT(*)")
+        ->from("places")
+        ->where("parentid = :parentid",array(":parentid"=>$this->placeid))
+        ->queryScalar() > 0);
+  }
+  
   public function load_pictures()
   {
   	$this->pictures = array();
@@ -379,6 +387,20 @@ class PlacesObj extends FactoryObj
         ))
         ->queryScalar() != 0
      );
+  }
+  
+  public function pre_delete()
+  {
+      Yii::app()->db->createCommand()
+        ->update("places",
+            array(
+                "parentid" => 9000
+            ),
+            "parentid = :parentid",
+            array(
+                ":parentid" => $this->placeid
+            )
+        );
   }
   
 }
