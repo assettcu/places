@@ -10,3 +10,4 @@ debug.log
 library/images/thumbs.db
 protected/tests
 temp/
+.idea/*
