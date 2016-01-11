@@ -16,7 +16,7 @@ if(!$place->loaded) :
 else:
 
 # Session will keep which year/term (yt) user is looking at across the application
-$yt = "20147";
+$yt = "20161";
 if(!isset($_SESSION)) {
     session_start();
 }
