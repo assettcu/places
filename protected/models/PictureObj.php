@@ -26,11 +26,11 @@ class PictureObj extends FactoryObj
             $this->post_loading = true;
             $conn = Yii::app()->db;
             $query = "
-        SELECT      pictureid
-        FROM        {{" . $this->table . "}}
-        WHERE       placeid = 0
-        LIMIT       1;
-      ";
+                SELECT      pictureid
+                FROM        {{" . $this->table . "}}
+                WHERE       placeid = 0
+                LIMIT       1;
+            ";
             $this->pictureid = $conn->createCommand($query)->queryScalar();
             $this->load();
 
