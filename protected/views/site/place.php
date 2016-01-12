@@ -41,6 +41,7 @@ if($place->placetype->machinecode == "building") {
         )
     );
 }
+
 # Load classes for a classroom
 else if($place->placetype->machinecode == "classroom") {
     $parent = $place->get_parent();
@@ -121,7 +122,7 @@ foreach($childplaces as $childplace) {
         <div class="images" style="position:relative;">
             <img src="<?php echo WEB_LIBRARY_PATH; ?>images/loading-images.gif" class="loading-gif" alt="Please wait while images are being loaded."/>
             <div class="galleria">
-                <?php 
+                <?php
                 if($place->has_pictures()) {
                     $pictures = $place->load_images();
                     foreach($pictures as $picture) {

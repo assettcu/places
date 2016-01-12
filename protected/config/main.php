@@ -42,6 +42,7 @@ $mainconfig = array(
 			// use 'site/error' action to display errors
             'errorAction'=>'site/error',
         ),
+		/*
 		'log'=>array(
 			'class'=>'CLogRouter',
 			'routes'=>array(
@@ -51,6 +52,7 @@ $mainconfig = array(
 				),
 			),
 		),
+		*/
 		'googleAnalytics' => array(
 			'class' => 'ext.GoogleAnalytics.TPGoogleAnalytics',
 			'account' => 'UA-7054410-2',

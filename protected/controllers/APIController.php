@@ -68,4 +68,24 @@ class APIController extends BaseController
         
         return print json_encode($markers);
     }
+
+    public function actionBuildingCode()
+    {
+        $rest = new RestServer();
+        $request = RestUtils::processRequest();
+        $required = array("name");
+        $keys = array_keys($request);
+        if(count(array_intersect($required, $keys)) != count($required)) {
+            return RestUtils::sendResponse(308);
+        }
+
+        $place = new PlacesObj();
+        $place->placename = $request["name"];
+        $place->load();
+        if($place->loaded) {
+            $place->load_metadata();
+        }
+
+        return print json_encode($place->metadata->building_code);
+    }
 }

@@ -26,11 +26,11 @@ class PictureObj extends FactoryObj
             $this->post_loading = true;
             $conn = Yii::app()->db;
             $query = "
-                SELECT      pictureid
-                FROM        {{" . $this->table . "}}
-                WHERE       placeid = 0
-                LIMIT       1;
-            ";
+        SELECT      pictureid
+        FROM        {{" . $this->table . "}}
+        WHERE       placeid = 0
+        LIMIT       1;
+      ";
             $this->pictureid = $conn->createCommand($query)->queryScalar();
             $this->load();
 
@@ -99,6 +99,9 @@ class PictureObj extends FactoryObj
 
     public function render($width = "auto", $height = "auto", $type = "resize")
     {
+        if(!isset($this->path)) {
+            return "";
+        }
         $imager = new Imager(ROOT . $this->path);
 
         foreach ($this->attributes as $index => $attribute) {
@@ -136,6 +139,9 @@ class PictureObj extends FactoryObj
 
     public function get_thumb()
     {
+        if(!isset($this->path)) {
+            return "";
+        }
         $path = explode("/", $this->path);
         $path = array_filter($path);
         $file = array_pop($path);
@@ -156,6 +162,9 @@ class PictureObj extends FactoryObj
 
     public function get_thumb_path()
     {
+        if(!isset($this->path)) {
+            return "";
+        }
         $path = explode("/", $this->path);
         $path = array_filter($path);
         $file = array_pop($path);
@@ -188,7 +197,7 @@ class PictureObj extends FactoryObj
     public function pre_delete()
     {
         if ($this->has_file()) {
-            @unlink(ROOT . $this->path);
+            // @unlink(ROOT . $this->path);
         }
     }
 
