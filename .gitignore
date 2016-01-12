@@ -1,11 +1,2 @@
-app/
-assets/
-protected/runtime/
-themes/classic/views/
-images/
-protected/config/main-ext.php
-debug.log
-library/images/thumbs.db
-protected/tests
-temp/
 .idea/*
+*/thumbs.db
