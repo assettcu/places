@@ -1,5 +1,4 @@
-app/
-assets/
+framework/
 protected/runtime/
 themes/classic/views/
 images/
@@ -8,4 +7,3 @@ debug.log
 library/images/thumbs.db
 protected/tests
 temp/
-.idea/*
