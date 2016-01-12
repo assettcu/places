@@ -1,6 +1,6 @@
 <?php
 // remove the following lines when in production mode
-defined('YII_DEBUG') or define('YII_DEBUG',true);
+defined('YII_DEBUG') or define('YII_DEBUG',false);
 if(YII_DEBUG) {
     ini_set("display_errors",1);
     error_reporting(E_ALL);

@@ -10,8 +10,9 @@
 <ul class="rig columns-4">
     <?php foreach($places as $place):
               $image = $place->load_first_image();
-              if(!$image->loaded)
-                $image = new PictureObj(1);
+              if(!$image->loaded) {
+                  $image = new PictureObj(1);
+              }
                 $thumb = $image->get_thumb();
     ?>
     <li>

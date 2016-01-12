@@ -16,8 +16,16 @@ class PlacesObj extends FactoryObj
           $this->placeid = Yii::app()->db->createCommand()
             ->select("placeid")
             ->from("places")
-            ->where("placename=:placename",array(":placename"=>$this->placeid))
+            ->where("placename = :placename",array(":placename"=>$this->placeid))
             ->queryScalar();
+      }
+
+      if(isset($this->placename) and !$this->is_valid_id()) {
+          $this->placeid = Yii::app()->db->createCommand()
+              ->select("placeid")
+              ->from("places")
+              ->where("placename = :placename",array(":placename"=>$this->placename))
+              ->queryScalar();
       }
   }
   
@@ -325,7 +333,7 @@ class PlacesObj extends FactoryObj
   
   public function has_pictures()
   {
-	if(!empty($this->pictures)) return true;
+	if(!empty(@$this->pictures)) return true;
 	
     $conn = Yii::app()->db;
     $query = "

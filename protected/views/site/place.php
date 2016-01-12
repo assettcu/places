@@ -16,7 +16,7 @@ if(!$place->loaded) :
 else:
 
 # Session will keep which year/term (yt) user is looking at across the application
-$yt = "20147";
+$yt = "20161";
 if(!isset($_SESSION)) {
     session_start();
 }
@@ -41,6 +41,7 @@ if($place->placetype->machinecode == "building") {
         )
     );
 }
+
 # Load classes for a classroom
 else if($place->placetype->machinecode == "classroom") {
     $parent = $place->get_parent();
@@ -121,7 +122,7 @@ foreach($childplaces as $childplace) {
         <div class="images" style="position:relative;">
             <img src="<?php echo WEB_LIBRARY_PATH; ?>images/loading-images.gif" class="loading-gif" alt="Please wait while images are being loaded."/>
             <div class="galleria">
-                <?php 
+                <?php
                 if($place->has_pictures()) {
                     $pictures = $place->load_images();
                     foreach($pictures as $picture) {
@@ -201,7 +202,7 @@ foreach($childplaces as $childplace) {
         <br class="clear" />
         <?php if($place->placetype->machinecode == "building"): ?>
         <a name="spaces"></a>
-        <h3 name="spaces-header">Spaces in this <?php echo $place->placetype->singular; ?></h2>
+        <h3 name="spaces-header">Spaces in this <?php echo $place->placetype->singular; ?></h3>
         
         <div class="metachoice spaces">
             <span class="help-field">Show Only These Spaces</span>: 
@@ -253,7 +254,7 @@ foreach($childplaces as $childplace) {
         </ul>
 
         <a name="googlemap"></a>
-        <h3 name="googlemap-header">Google Map</h2>
+        <h3 name="googlemap-header">Google Map</h3>
         
         <div class="calign">
             <div id="map_canvas" style="height:400px;width:auto;"></div>
@@ -290,7 +291,7 @@ foreach($childplaces as $childplace) {
         <?php if($place->placetype->machinecode != "commonarea"): ?>
         <a name="yt"></a>
         <a name="buildingclasses"></a>
-        <h3 name="buildingclasses-header">Classes in this <?php echo $place->placetype->singular; ?></h2>
+        <h3 name="buildingclasses-header">Classes in this <?php echo $place->placetype->singular; ?></h3>
         <div id="classes-container" class="right">
             Classes for 
             <label for="yt-select" class="hide">Select Year/Term</label>
