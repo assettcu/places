@@ -1,6 +1,5 @@
 app/
 assets/
-framework/
 protected/runtime/
 themes/classic/views/
 images/
